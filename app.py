@@ -4,16 +4,18 @@
 
 ######## importing ########
 from flask import Flask, request, session, render_template, url_for, redirect
-
+import sqlite3
 
 ######## global configuration ########
 
 ######## initializaton ########
 
 app = Flask(__name__)
-# app.secret_key =
+app.secret_key = 's\x1f}\xc8\xe29c\x84\xd1\x87P\x8e\xa5h5s\xf1\xfff\xcf\xfcK\xe8i'
 
 ######## user utils ########
+def verify(id,passwd):
+    pass
 
 ######## views ########
 @app.route('/')
@@ -23,7 +25,7 @@ def index():
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html');
+        return render_template('login.html')
     elif request.method == 'POST':
         session['id'] = request.form['id']
         session['passwd'] = request.form['passwd']
@@ -42,7 +44,7 @@ def login():
 
 @app.route('/home/')
 def personal():
-    return "<h1>主页，正在加班建设中<h1>"
+    return render_template("home.html")
 
 @app.route('/registering/', methods=['POST'])
 def register():
@@ -63,6 +65,16 @@ def register():
             return redirect(url_for('login'))
         else:
             return redirect(url_for('login'))
+
+@app.route('/logout/')
+def logout():
+    if 'id' in session:
+        # clear session
+        session.pop('id', None)
+        print(session.pop('passwd', None))  # should get `None`
+        session.pop('filename', None)
+        flash("已登出", category='message')
+        return redirect(url_for('index'))
 ######## Miscellaneous entries ########
 
 @app.route('/opensource/')

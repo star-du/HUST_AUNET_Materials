@@ -36,8 +36,8 @@
           <div class="navbar-fixed">
               <nav>
                   <div class="nav-wrapper teal">
-                      <!-- Header title will redirect you to the home page 注意：图片未添加  -->
-                      <a href="{{ url_for('personal') }}" class="brand-logo" title="点击返回主页面"><img src="" style="width:1em; height:1em;" alt="something to fill in"/>华中大学生社团联合会 物资管理系统</a>
+                      <!-- Header title will redirect you to the home page 注意：图片需要调整  -->
+                      <a href="{{ url_for('personal') }}" class="brand-logo" title="点击返回主页面"><img src="{{ url_for('static', filename='img/unique_weizai.png') }}" style="width:1.5em; height:1.5em; margin: auto;" alt="AU-web"/>华中大学生社团联合会 物资管理系统</a>
 
                       <!-- 以下if语句中内容 处理已登陆的管理员账号 -->
                       {% if 'id' in session %}
