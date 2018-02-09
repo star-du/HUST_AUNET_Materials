@@ -1,0 +1,25 @@
+/**
+ * Footer hack --- always stick our footers below page
+  http://materializecss.com/footer.html
+ */
+
+/** Main hack code **/
+body
+{
+     display: flex;
+     min-height: 100vh;
+     flex-direction: column;
+}
+
+main
+{
+     flex: 1 0 auto;
+}
+
+
+/** Our custom decorations **/
+footer.page-footer
+{
+    margin-top: 2rem;
+    padding-top: 2px;
+}

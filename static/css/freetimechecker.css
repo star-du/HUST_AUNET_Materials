@@ -1,0 +1,56 @@
+.freetime-picker-main > .row
+{
+    margin-bottom: 0;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.freetime-picker-main > .row > .btn-large
+{
+    background-color: #ffffff;
+}
+.freetime.btn-large
+{
+    /* margin: 1px */
+}
+.col.freetime-head
+{
+    padding: 15px 5px;
+    /* margin: 1px */
+}
+.col.freetime
+{
+    padding: 15px 5px;
+    text-align: left;
+    /* border-right: 1px solid #eee; */
+}
+.freetime-picker-main > .row .col.s1
+{
+    width: 12.5%
+}
+.row.freetime-row
+{
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.submit-bar
+{
+    margin-top: 2em;
+}
+
+.submit-bar > .row
+{
+    margin-top: 20px;
+}
+
+.submit-btn
+{
+    margin: 0 auto;
+    width: 40%
+}
+
+/**
+.search-result-bar
+{
+    margin-bottom: 10px;
+}
+*/
