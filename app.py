@@ -60,35 +60,16 @@ def login():
 def personal():
     return render_template("home.html")
 
-@app.route('/registering/', methods=['POST'])
-def register():
-    id = request.form.get('id', '')
-    passwd = request.form.get('passwd_first', '')
-    if passwd != request.form.get('passwd_second', ''):
-        # TODO: if using 'warning', will toast an empty warning and then the info-toast containning the message
-        flash("两次密码不相同！<br>换个好记一点的吧？", category='warning')
-        return redirect(url_for('login'))
-    elif len(passwd) < 8:
-        flash("密码太短了！", category='warning')
-        return redirect(url_for('login'))
-    elif request.form.get('invitation', '') != INVITATION:
-        flash("邀请码错误！", category='warning')
-        return redirect(url_for('login'))
-    else:
-        if adminRegist(id, passwd):
-            return redirect(url_for('login'))
-        else:
-            return redirect(url_for('login'))
-
 @app.route('/logout/')
 def logout():
-    if 'id' in session:
+    # 已登陆的管理员才能看到logout按钮，否则报错
+    assert 'id' in session
         # clear session
-        session.pop('id', None)
-        print(session.pop('passwd', None))  # should get `None`
-        session.pop('filename', None)
-        flash("已登出", category='message')
-        return redirect(url_for('index'))
+    session.pop('id', None)
+    print(session.pop('passwd', None))  # should get `None`
+    session.pop('filename', None)
+    flash("已登出", category='message')
+    return redirect(url_for('index'))
 ######## Miscellaneous entries ########
 
 @app.route('/opensource/')
