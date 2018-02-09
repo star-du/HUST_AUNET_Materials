@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- 本篇主要借鉴了HR系统的基础模板，增加了sticky footer(底栏下沉)，修改了一些细节 ，可以按需要大幅度修改，希望为前端做一点微小的贡献（手动滑稽） -杜 -->
+<!-- 本篇主要借鉴了HR系统的基础模板，修改了一些细节， 并加了部分注释，可以按需要大幅度修改，希望为前端做一点微小的贡献（手动滑稽） -杜 -->
 <html>
 <head>
         <!-- Core CSSes -->
@@ -26,20 +26,6 @@
 				<!-- title -->
         <!-- 如果页面定义了block title 会覆盖，否则使用默认的 -->
 				<title>{% block title %}华中大学生社团联合会 物资管理系统{% endblock %} </title>
-
-				<!-- add a stickey-footer -->
-				<style>
-				html, body {
-				  height: 100%;
-				}
-				body {
-				  display: flex;
-				  flex-direction: column;
-				}
-				.content {
-				  flex: 1 0 auto; /*here three values are flex-grow, flex-shrink and flex-basis. See 知乎专栏：https://zhuanlan.zhihu.com/p/24372279*/
-				}
-		</style>
 
 </head>
 
@@ -89,12 +75,13 @@
               </nav>
           </div>
 
-      </header>
+</header>
 
     <!--主要内容-->
-    <div id="content" class="content">{% block content %}{% endblock %}
+		<main>
+    <div id="content">{% block content %}{% endblock %}
 		</div>
-
+	</main>
     <!-- footer -->
   <footer class="page-footer teal">
 <!-- 此处如有需要， 可以在版权页上导航栏内容里加入链接（如社团主页，优秀社团网站等等）或文字
@@ -118,7 +105,6 @@
         <div class="footer-copyright">
             <div class="container">
               © 2018 华中科技大学学生社团联合会  思存工作室
-              <!--对应于开源说明页面 代码添加后删除注释 -->
             <a class="grey-text text-lighten-4 right" href="{{ url_for('opensource_info') }}">开源说明</a>
             </div>
          </div>
