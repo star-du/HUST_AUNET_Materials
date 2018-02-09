@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!-- 本篇主要借鉴了HR系统的基础模板，增加了sticky footer(底栏下沉)，修改了一些细节 ，可以按需要大幅度修改，希望为前端做一点微小的贡献（手动滑稽） -杜 -->
+<html>
+<head>
+        <!-- Core CSSes -->
+		<link href="{{ url_for('static', filename='css/google_material_icons.css') }}" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/materialize.css') }}"  media="screen,projection"/>
+
+        <!-- Metadata -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<meta name="theme-color" content="#33691E">
+
+        <!-- Should localize necessary Javascript libraries -->
+		<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.1.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+
+        <!-- Free time checker's own CSS -->
+        <link href="{{ url_for('static', filename='css/freetimechecker.css') }}" rel="stylesheet">
+
+        <!-- Inpage Toast Manage ： For the sake of just giving toast in frontend, not background -->
+        <script type="text/javascript" src="{{ url_for('static', filename='js/inpage_toast_manager.js') }}"></script>
+
+        <!-- Footer hack -->
+        <link href="{{ url_for('static',filename='css/footer_hack.css') }}" rel="stylesheet">
+
+				<!-- title -->
+        <!-- 如果页面定义了block title 会覆盖，否则使用默认的 -->
+				<title>{% block title %}华中大学生社团联合会 物资管理系统{% endblock %} </title>
+
+				<!-- add a stickey-footer -->
+				<style>
+				html, body {
+				  height: 100%;
+				}
+				body {
+				  display: flex;
+				  flex-direction: column;
+				}
+				.content {
+				  flex: 1 0 auto; /*here three values are flex-grow, flex-shrink and flex-basis. See 知乎专栏：https://zhuanlan.zhihu.com/p/24372279*/
+				}
+		</style>
+
+</head>
+
+<body>
+	<input type="hidden" value="0" id="refresh-flag">
+  <!-- [PUBLIC ZONE] PAGE HEADER 导航栏 -->
+  <header>
+          <div class="navbar-fixed">
+              <nav>
+                  <div class="nav-wrapper teal">
+                      <!-- Header title will redirect you to the home page 注意：图片未添加  -->
+                      <a href="{{ url_for('personal') }}" class="brand-logo" title="点击返回主页面"><img src="" style="width:1em; height:1em;" alt="something to fill in"/>华中大学生社团联合会 物资管理系统</a>
+
+                      <!-- 以下if语句中内容 处理已登陆的管理员账号 -->
+                      {% if 'id' in session %}
+                          <!-- for desktop -->
+                            <ul id="logout-m" class="dropdown-content">
+                                <li><a href="#!">手滑了....</a></li>
+                                <li><a href="{{ url_for('logout') }}">确认登出</a></li>
+                            </ul>
+                          <!-- for mobile -->
+                        <ul id="logout-l" class="dropdown-content">
+                            <li><a href="#!">手滑了....</a></li>
+                            <li><a href="{{ url_for('logout') }}">确认登出</a></li>
+                        </ul>
+
+
+            <!-- for desktop -->
+                           <ul class="right hide-on-med-and-down">
+                <li>
+                    <a class="dropdown-button">{{ session['id'] }}</a>
+                </li>
+                <li>
+                    <a class="dropdown-button" href="#!" data-activates="logout-l" title="注销登录">登出</a>
+                </li>
+                           </ul>
+
+            <!-- for mobile -->
+                        <ul class="right hide-on-large-only">
+                          <li>
+                            <a class="dropdown-button" href="#!" data-activates="logout-m" title="注销登录">登出</a>
+                          </li>
+                        </ul>
+
+                       {% endif %}
+                  </div>
+              </nav>
+          </div>
+
+      </header>
+
+    <!--主要内容-->
+    <div id="content" class="content">{% block content %}{% endblock %}
+		</div>
+
+    <!-- footer -->
+  <footer class="page-footer teal">
+<!-- 此处如有需要， 可以在版权页上导航栏内容里加入链接（如社团主页，优秀社团网站等等）或文字
+      <div class="container">
+					 <div class="row">
+						 <div class="col l6 s12">
+							 <h5 class="white-text">Footer Content</h5>
+							 <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+						 </div>
+						 <div class="col l4 offset-l2 s12">
+							 <h5 class="white-text">Links</h5>
+							 <ul>
+								 <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+								 <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+								 <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+							 </ul>
+						 </div>
+					 </div>
+</div>
+-->
+        <div class="footer-copyright">
+            <div class="container">
+              © 2018 华中科技大学学生社团联合会  思存工作室
+              <!--对应于开源说明页面 代码添加后删除注释 -->
+            <a class="grey-text text-lighten-4 right" href="{{ url_for('opensource_info') }}">开源说明</a>
+            </div>
+         </div>
+
+    </footer>
+
+<!-- 以下是信息处理部分 需配合上面refresh-flag的元素使用 -->
+		<!-- Flash Notification Controller based on Materialize Toaster -->
+		<!-- Use the theme from Toastr -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.css') }}">
+		<script id="Flash-notification-controller">
+				$(document).ready(function() {
+					$(".dropdown-button").dropdown();
+
+						var showFlashToast = function () {
+
+								var refresh_flag = document.getElementById("refresh-flag");
+								if (refresh_flag.value == "0") {
+										refresh_flag.value = "1";
+
+										{% for msg in get_flashed_messages(with_categories=true) %}
+												var message = {
+														// TODO: |safe 标签不管用
+														text: "{{ msg[1] }}".replace("&lt;", "<").replace("&gt;", ">"),
+														category: "{{ msg[0] }}"
+												};
+												var $messageHTML = $("<div>" + message.text + "</div>");
+												switch (message.category) {
+														case "error":
+																Materialize.toast($messageHTML, 4000, "toast-error");
+																break;
+														case "success":
+																Materialize.toast($messageHTML, 3000, "toast-success");
+																break;
+														case "warning":
+																Materialize.toast($messageHTML, 3000, "toast-warning");
+																break;
+														default:
+																Materialize.toast($messageHTML, 3000, "toast-info");
+												}
+
+										{% endfor %}
+								}
+								else{
+										location.reload();
+								}
+						};
+
+						$("body").bind("onload", showFlashToast())
+				})
+
+		</script>
+
+
+</body>
+
+</html>
