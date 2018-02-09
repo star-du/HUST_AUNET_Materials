@@ -42,7 +42,7 @@ def login():
 
 @app.route('/home/')
 def personal():
-    return "<h1>正在加班建设中<h1>"
+    return "<h1>主页，正在加班建设中<h1>"
 
 @app.route('/registering/', methods=['POST'])
 def register():
