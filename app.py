@@ -4,10 +4,13 @@
 
 ######## importing ########
 from flask import Flask, request, session, render_template, url_for, redirect
-import sqlite3
+from flask import make_response, flash, jsonify, send_from_directory
+import sqlite3, os
+
 
 ######## global configuration ########
-
+SYSTEM_ROOT = os.path.split(os.path.realpath(__file__))[0]
+DATABASE = os.path.join(SYSTEM_ROOT, 'data.db')
 ######## initializaton ########
 
 app = Flask(__name__)
@@ -15,7 +18,18 @@ app.secret_key = 's\x1f}\xc8\xe29c\x84\xd1\x87P\x8e\xa5h5s\xf1\xfff\xcf\xfcK\xe8
 
 ######## user utils ########
 def verify(id,passwd):
-    pass
+    with sqlite3.connect(DATABASE) as database:
+        cursor = database.execute("select password from admin where id = ? ", (id,))
+        correct = cursor.fetchone()
+        if correct==None:  # wrong id
+            flash("用户名或密码错误！", category="error")
+            return False
+        else:  # correct id
+            if passwd ==correct[0]:
+                return True    # correct id-pass pair
+            else:  # wrong passwd
+                flash("用户名或密码错误！", category="error")
+                return False
 
 ######## views ########
 @app.route('/')
