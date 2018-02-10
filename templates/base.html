@@ -70,6 +70,13 @@
                           </li>
                         </ul>
 
+												{% else %}
+												<ul class="right">
+												<li>
+												<a class="dropdown-button" href="{{ url_for('login')}}">我是管理员</a>
+												</li>
+												</ul>
+
                        {% endif %}
                   </div>
               </nav>

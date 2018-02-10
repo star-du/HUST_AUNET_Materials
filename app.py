@@ -31,7 +31,8 @@ def verify(id,passwd):
                 flash("用户名或密码错误！", category="error")
                 return False
 
-######## views ########
+######## views  ########
+    ### entry & exit ###
 @app.route('/')
 def index():
     return redirect(url_for('login'))
@@ -71,13 +72,20 @@ def logout():
     # session.pop('filename', None)
     flash("已登出", category='message')
     return redirect(url_for('index'))
+
+    ### entry to modules ###
+    
+@app.route('/materials/')
+def materials_apply():
+    return render_template("materials_apply.html")
+
+
+
 ######## Miscellaneous entries ########
 
 @app.route('/opensource/')
 def opensource_info():
-    return render_template("opensource-info.html")  # 此html可以直接沿用吧？
-                                                    # REPLY: 可以
-
+    return render_template("opensource-info.html")
 
 ######## run ########
 

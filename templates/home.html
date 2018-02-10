@@ -1,4 +1,140 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>主页加班建设中</h1>
+<div class="container">
+	<div class="row">
+		<h4 class="col s12">你好，</h4>
+
+<ul class="collapsible popout col s12" data-collapsible="accordion">
+  <li>
+    <div class="collapsible-header"><i class="material-icons">perm_identity</i>物资借用</div>
+    <div class="collapsible-body" style="padding:0">
+      <div class="collection">
+        <a href="#materials_notice" class="collection-item"><i class="material-icons left">event</i>申请规则公告</a>
+        <a href="{{ url_for('materials_apply') }}" class="collection-item"><i class="material-icons left">file_upload</i>提交借用申请</a>
+      </div>
+    </div>
+  </li>
+  <li>
+    <div class="collapsible-header"><i class="material-icons">schedule</i>教室借用</div>
+<!--
+    <div class="collapsible-body" style="padding:0">
+      <div class="collection">
+        <a href="#" class="collection-item"><i class="material-icons left">alarm_on</i></a>
+        <a href="#" class="collection-item"><i class="material-icons left">search</i></a>
+      </div>
+    </div>-->
+  </li>
+  <!-- 后台管理仅已登陆的管理员可以进入 -->
+{% if 'id' in session %}
+  <li>
+    <div class="collapsible-header"><i class="material-icons">supervisor_account</i>管理后台</div>
+    <!--
+    <div class="collapsible-body" style="padding:0">
+      <div class="collection">
+        <a href="#score" class="collection-item modal-trigger"><i class="material-icons left">thumbs_up_down</i>审批申请</a>
+        <a href="#" class="collection-item"><i class="material-icons left">search</i>记录查询</a>
+      </div>
+    </div> -->
+  </li>
+  {% endif %}
+</ul>
+</div>
+</div>
+
+<!-- modal window for materials_notice -->
+<div id="materials_notice" class="modal modal-fixed-footer">
+<div class="modal-content">
+<h4 class="center">物资申请规章制度</h4>
+<div class="divider"></div>
+<p>1、物资移入及清理：对有需要利用物资储藏室储存物资的组织，应提前联系管理人员，填写申请，做好相关登记备案后方可。对损耗的物品需要清理的，大件及贵重物品（价值超过20元的）应先和上级部门确认，取得许可后，进行登记备案，并在物资资料名单里进行清除，方可处理掉。
+2、物资借用：对有需要借用物资的组织或个人，应提前联系管理人员。填写物资借用申请表（电子版）（贵重及管制物品还需提前向上级汇报，待同意后，填写责任书等），待审批登记后方可出借。
+行政组管理物资借用情况一律进行填写物资借用表登记借出及归还情况。并至少需提前一个工作日提出申请，贵重物品（估值大于20元）必须需提前3个工作日申请，获得负责人批准方可借出，估值大于100元的物品需负责人在场方能借出，其他情况有值班人员签字借出。借用及归还情况必须通知到相应负责人并在值班人员处进行登记。否则予以记录，作为下次物品借用参考，违规情况严重的可适当冻结该部门借用物资时间，并进行通报。
+3、日常管理：储藏室内不可带入食物，有需要存放食物类物品的应特别说明，单独进行管理。以免引起鼠患，损坏其它物品。储藏间内禁止吸烟，切不可带入明火，以免引起火灾。应定期储藏间内消防设施定期检查和维修。房间负责人应每周清查统计房间物资借用及归还情况。
+4、赔偿规则：贵重物品如出现人为损坏或遗失，借用人因照价赔偿。损耗物品出现严重破坏应酌情赔偿损失。归还物品出现损坏的因注明登记，否则对单位进行通报并冻结该单位一定时长物资借用。
+
+附则：如遇到其他特殊情况，应询问负责人，具体以负责人答复为准，规则如有更改会提前进行通知。
+注：规则有秘书部行政组制定，2017年12月1日起执行，适用于所有行政组管理物资。如有建议或相关疑问请联系
+行政组组长杨义慧 电话：18230708185
+</p>
+
+  <a href="{{ url_for('materials_apply') }}"><button type="submit" class="btn col s4 waves-effect waves-light right">开始填表吧<i class="material-icons right">open_in_new</i></button></a>
+</div>
+<div class="modal-footer">
+<a href="#!" class="modal-action modal-close waves-effect waves-dark btn-flat ">关闭公告</a>
+</div>
+</div>
+
+<!-- 弹出：评分表 (资源可以利用 暂时保留)
+<div id="score" class="modal modal-fixed-footer">
+<div class="modal-content">
+<h5 class="center">创建评分</h5>
+<div class="divider"></div>
+<form method="post">
+  <div class="row">
+    <select name="depart" class="col s10 offset-s1" required>
+      <option value="" disabled selected>部门</option>
+      <option value="财务部" id="fun">财务部</option>
+      <option value="秘书部" id="sec">秘书部</option>
+      <option value="人力资源部" id="hr">人力资源部</option>
+      <option value="社团部" id="clb">社团部</option>
+      <option value="行政监察部" id="sup">行政监察部</option>
+      <option value="外联部" id="out">外联部</option>
+      <option value="公共关系部" id="pr">公共关系部</option>
+      <option value="宣传部" id="pub">宣传部</option>
+      <option value="媒体部" id="med">媒体部</option>
+      <option value="思存工作室" id="sicun">思存工作室</option>
+      <option value="新媒体工作室" id="nmed">新媒体工作室</option>
+      <option value="社团外联企划小组" id="cop">社团外联企划小组</option>
+      <option value="文艺拓展部" id="ext">文艺拓展部</option>
+      <option value="其它" id="o">其它</option>
+    </select>
+  </div>
+  <div class="row">
+    <div class="input-field col s6 left">
+      <input type="text" name="title" class="validate" required>
+      <label for="title">标题</label>
+    </div>
+    <div class="input-field col s6 right">
+      <input name="date" type="date" class="datepicker" required>
+      <label for="date">考评时间</label>
+    </div>
+  </div>
+  <button type="submit" class="btn col s4 waves-effect waves-light right">创建表格<i class="material-icons right">open_in_new</i></button>
+</form>
+</div>
+<div class="modal-footer">
+<!-\-a class="modal-action waves-effect waves-dark btn-flat light-green-text text-darken-4" type="submit">开始评分<i class="material-icons right">open_in_new</i></a-\->
+<a href="#!" class="modal-action modal-close waves-effect waves-dark btn-flat ">取消</a>
+</div>
+</div>
+-->
+
+<script>
+/**
+* Materialize Controller code
+*/
+$(document).ready(function(){
+$('.collapsible').collapsible();
+$('.modal').modal();
+$('select').material_select();
+$('.modal').modal({
+  dismissible: true, // Modal can be dismissed by clicking outside of the modal
+  opacity: .5, // Opacity of modal background
+  in_duration: 300, // Transition in duration
+  out_duration: 200, // Transition out duration
+  starting_top: '4%', // Starting top style attribute
+  ending_top: '10%', // Ending top style attribute
+  ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+    console.log(modal, trigger);
+  },
+  complete: function() {} // Callback for Modal close
+});
+
+$('.datepicker').pickadate({
+  selectMonths: true, // Creates a dropdown to control month
+  selectYears: 15 // Creates a dropdown of 15 years to control year
+});
+});
+</script>
+
 {% endblock %}
