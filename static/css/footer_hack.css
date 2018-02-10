@@ -14,6 +14,7 @@ body
 main
 {
      flex: 1 0 auto;
+     /*here three values are flex-grow, flex-shrink and flex-basis. See 知乎专栏：https://zhuanlan.zhihu.com/p/24372279*/
 }
 
 
