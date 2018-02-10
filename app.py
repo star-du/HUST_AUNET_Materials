@@ -49,6 +49,7 @@ def login():
                 assert session.pop('passwd', None) != None
             except:
                 pass
+            flash("登陆成功！", category='success')
             return redirect(url_for('personal'))    # TODO: redirect error
         else:
             session.pop('id', None)
