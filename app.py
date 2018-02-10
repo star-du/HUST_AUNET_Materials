@@ -6,7 +6,7 @@
 from flask import Flask, request, session, render_template, url_for, redirect
 from flask import make_response, flash, jsonify, send_from_directory
 from time import gmtime, strftime
-import sqlite3, os
+import sqlite3, os ,re#正则
 
 
 ######## global configuration ########
@@ -100,6 +100,26 @@ def materials_apply():
         printLog("user {} apply for material: {}, submitting time: {}".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         flash("表格提交成功", category='success')
         return redirect(url_for('personal'))
+
+
+#检查邮箱格式
+def email_available(email):#email :str 格式
+    pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
+    match = pattern.match(email)
+    if match:
+        return True
+    else:
+        return False
+
+
+#检查姓名格式
+def name_available(name):#name :str 格式
+    pattern = re.compile(r"[\u4e00-\u9fa5]{2,4}")#匹配2到4个汉字
+    match = pattern.match(name)
+    if match:
+        return True
+    else:
+        return False
 
 
 ######## Miscellaneous entries ########
