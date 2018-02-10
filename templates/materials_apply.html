@@ -1,31 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-  <!-- don'no how 2 let <div> auto-fit -->
   <br><br>
   <div class="row">
     <form class="col s12 m8 offset-m2 l8 offset-l2" action="{{ url_for('materials_apply') }}" method="post">
-      <h5 class="center">物资申请</h5>
+      <h5 class="center"><i class="material-icons">perm_identity</i>物资申请</h5>
       <div class="progress col s12 ">
         <div class="determinate" style="width:100%"></div>
       </div>
-      <div class="row">
 
-      </div>
       <div class="input-field col s12">
-        <input name="name" type="text"  required>
+        <input name="name" type="text" class="validate" required>
         <label for="name">姓名</label>
       </div>
       <div class="input-field col s12">
-        <input name="material" type="text"  required>
+        <input name="material" type="text" class="validate" required>
         <label for="material">所借物品名称/编号</label>
       </div>
       <div class="input-field col s12">
-        <input name="contact" type="email" >
+        <input name="contact" class="validate" type="email" required>
         <label for="contact">邮箱</label>
       </div>
-
-
 
 
       <div class="col s12">
@@ -53,47 +48,48 @@
         <div class="determinate green darken-1" style="width:100%"></div>
       </div>
       <div class="input-field col s12">
-        <input name="startyear" type="text" class="validate" required>
+        <input name="startyear" type="text" class="validate" required min="2018">
         <label for="startyear">借出年份</label>
-      </div>
+      </div> <!-- TODO validation似乎未起作用 还需要修改/
+       或考虑使用datepicker + timepicker(我现在还不会从picker中返回的value里分离出year,month,day,hour 并在form中提交。//无奈//) -->
 
 
 
       <div class="input-field col s12">
-        <input name="startmonth" type="text" class="validate" required>
+        <input name="startmonth" type="text" class="validate" required min="1" max="12">
         <label for="startmonth">借出月份</label>
       </div>
 
       <div class="input-field col s12">
-        <input name="startday" type="text" class="validate" required>
+        <input name="startday" type="text" class="validate" required min="1" max="31">
         <label for="startday">借出日期</label>
       </div>
 
 
       <div class="input-field col s12">
-        <input name="starthour" type="text" class="validate" required>
-        <label for="starthour">借出时间</label>
+        <input name="starthour" type="text" class="validate" required min="0" max="23">
+        <label for="starthour">借出时间(具体到小时，有效值0-23)</label>
       </div>
 
 
       <div class="input-field col s12">
-        <input name="endingyear" type="text" class="validate" required>
+        <input name="endingyear" type="text" class="validate" required min="2018">
         <label for="endingyear">归还年份</label>
       </div>
 
       <div class="input-field col s12">
-        <input name="endingmonth" type="text" class="validate" required>
+        <input name="endingmonth" type="text" class="validate" required min="1" max="12">
         <label for="endingmonth">归还月份</label>
       </div>
 
       <div class="input-field col s12">
-        <input name="endingday" type="text" class="validate" required>
+        <input name="endingday" type="text" class="validate" required  min="1" max="31">
         <label for="endingday">归还日期</label>
       </div>
 
       <div class="input-field col s12">
-        <input name="endinghour" type="text" class="validate" required>
-        <label for="endinghour">归还时间</label>
+        <input name="endinghour" type="text" class="validate" required min="0" max="23">
+        <label for="endinghour">归还时间(具体到小时，有效值0-23)</label>
       </div>
 
       <div class="progress col s6 offset-s3">

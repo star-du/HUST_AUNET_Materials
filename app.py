@@ -5,6 +5,7 @@
 ######## importing ########
 from flask import Flask, request, session, render_template, url_for, redirect
 from flask import make_response, flash, jsonify, send_from_directory
+from time import gmtime, strftime
 import sqlite3, os
 
 
@@ -96,7 +97,7 @@ def materials_apply():
         return render_template('materials_apply.html')
     elif request.method == 'POST':
         applying_material(request.form)
-        printLog("user {} apply for material {}".format(request.form['name'], request.form['material']))
+        printLog("user {} apply for material: {}, submitting time: {}".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", gmtime())))
         flash("表格提交成功", category='success')
         return redirect(url_for('personal'))
 
