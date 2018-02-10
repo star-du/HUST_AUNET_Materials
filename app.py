@@ -22,17 +22,33 @@ def verify(id,passwd):
         cursor = database.execute("SELECT PASSWORD FROM ADMIN WHERE ID = ? ", (id,))
         correct = cursor.fetchone()
         if correct == None:  # wrong id
-            flash("用户名或密码错误！", category="error")
+            flash("用户名不存在！", category="error")
             return False
         else:  # correct id
             if passwd == correct[0]:
                 return True    # correct id-pass pair
             else:  # wrong passwd
-                flash("用户名或密码错误！", category="error")
+                flash("密码错误！", category="error")
                 return False
 
+def printLog(log):
+    ''' Use to write log for user's behaviour '''
+    with open("log.txt",encoding="utf-8", mode='a') as f:
+        f.write(log+"\n")
+
+def applying_material(form):
+    ''' Use to dump the applying information into the database, using the request.form as argument '''
+    mat_form = [(form['dep'], form['name'], form['material'], form['contact'], form['startyear'], form['startmonth'], form['startday'], form['starthour'], form['endingyear'], form['endingmonth'], form['endingday'], form['endinghour'])]
+    with sqlite3.connect(DATABASE) as database:
+        c = database.cursor()
+        c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
+        # I note that the first null value is _needed_ for the index (the integer-based prime key) to AUTOINCREMENT, and it seems to be the so called 'ROWID' column
+        # maybe should check : https://stackoverflow.com/questions/7905859/is-there-an-auto-increment-in-sqlite
+        database.commit()
+
+
 ######## views  ########
-    ### entry & exit ###
+    ''' entry & exit '''
 @app.route('/')
 def index():
     return redirect(url_for('login'))
@@ -67,18 +83,22 @@ def logout():
     # 已登陆的管理员才能看到logout按钮，否则报错
     assert 'id' in session
         # clear session
-    session.pop('id', None)
+    session.pop('id', None) # about the usage of session.pop see: https://stackoverflow.com/questions/20115662/what-does-the-second-argument-of-the-session-pop-method-do-in-python-flask
     print(session.pop('passwd', None))  # should get `None`
-    # session.pop('filename', None)
     flash("已登出", category='message')
     return redirect(url_for('index'))
 
-    ### entry to modules ###
-    
-@app.route('/materials/')
-def materials_apply():
-    return render_template("materials_apply.html")
+    ''' entry to modules '''
 
+@app.route('/materials/', methods=['GET', 'POST'])
+def materials_apply():
+    if request.method == 'GET':
+        return render_template('materials_apply.html')
+    elif request.method == 'POST':
+        applying_material(request.form)
+        printLog("user {} apply for material {}".format(request.form['name'], request.form['material']))
+        flash("表格提交成功", category='success')
+        return redirect(url_for('personal'))
 
 
 ######## Miscellaneous entries ########
@@ -91,4 +111,4 @@ def opensource_info():
 
 if __name__ == '__main__':
 
-    app.run(host="127.0.0.1", debug=True)
+    app.run(host = "127.0.0.1", debug = True)

@@ -2,8 +2,11 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<h4 class="col s12">你好，</h4>
 
+    {% if 'id' in session %}
+		<h4 class="col s12">你好, {{ session["id"] }}!</h4>
+    {% endif %}
+    
 <ul class="collapsible popout col s12" data-collapsible="accordion">
   <li>
     <div class="collapsible-header"><i class="material-icons">perm_identity</i>物资借用</div>
@@ -25,7 +28,7 @@
     </div>-->
   </li>
   <!-- 后台管理仅已登陆的管理员可以进入 -->
-{% if 'id' in session %}
+  {% if 'id' in session %}
   <li>
     <div class="collapsible-header"><i class="material-icons">supervisor_account</i>管理后台</div>
     <!--
@@ -58,10 +61,10 @@
 </p>
 
   <a href="{{ url_for('materials_apply') }}"><button type="submit" class="btn col s4 waves-effect waves-light right">开始填表吧<i class="material-icons right">open_in_new</i></button></a>
-</div>
+  </div>
 <div class="modal-footer">
 <a href="#!" class="modal-action modal-close waves-effect waves-dark btn-flat ">关闭公告</a>
-</div>
+  </div>
 </div>
 
 <!-- 弹出：评分表 (资源可以利用 暂时保留)

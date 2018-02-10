@@ -1,6 +1,143 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-<h2>物资申请</h2>
+  <!-- don'no how 2 let <div> auto-fit -->
+  <br><br>
+  <div class="row">
+    <form class="col s12 m8 offset-m2 l8 offset-l2" action="{{ url_for('materials_apply') }}" method="post">
+      <h5 class="center">物资申请</h5>
+      <div class="progress col s12 ">
+        <div class="determinate" style="width:100%"></div>
+      </div>
+      <div class="row">
+
+      </div>
+      <div class="input-field col s12">
+        <input name="name" type="text"  required>
+        <label for="name">姓名</label>
+      </div>
+      <div class="input-field col s12">
+        <input name="material" type="text"  required>
+        <label for="material">所借物品名称/编号</label>
+      </div>
+      <div class="input-field col s12">
+        <input name="contact" type="email" >
+        <label for="contact">邮箱</label>
+      </div>
+
+
+
+
+      <div class="col s12">
+        <select name="dep">
+          <option value="null" id="null" disabled selected>部门</option>
+          <option value="财务部" id="fun">财务部</option>
+          <option value="秘书部" id="sec">秘书部</option>
+          <option value="人力资源部" id="hr">人力资源部</option>
+          <option value="社团部" id="clb">社团部</option>
+          <option value="行政监察部" id="sup">行政监察部</option>
+          <option value="外联部" id="out">外联部</option>
+          <option value="公共关系部" id="pr">公共关系部</option>
+          <option value="宣传部" id="pub">宣传部</option>
+          <option value="媒体部" id="med">媒体部</option>
+          <option value="思存工作室" id="sicun">思存工作室</option>
+          <option value="新媒体工作室" id="nmed">新媒体工作室</option>
+          <option value="社团外联企划小组" id="cop">社团外联企划小组</option>
+          <option value="文艺拓展部" id="ext">文艺拓展部</option>
+          <option value="其它" id="o">其它</option>
+        </select>
+        <!--label>Materialize Select</label-->
+      </div>
+
+      <div class="progress col s6 offset-s3">
+        <div class="determinate green darken-1" style="width:100%"></div>
+      </div>
+      <div class="input-field col s12">
+        <input name="startyear" type="text" class="validate" required>
+        <label for="startyear">借出年份</label>
+      </div>
+
+
+
+      <div class="input-field col s12">
+        <input name="startmonth" type="text" class="validate" required>
+        <label for="startmonth">借出月份</label>
+      </div>
+
+      <div class="input-field col s12">
+        <input name="startday" type="text" class="validate" required>
+        <label for="startday">借出日期</label>
+      </div>
+
+
+      <div class="input-field col s12">
+        <input name="starthour" type="text" class="validate" required>
+        <label for="starthour">借出时间</label>
+      </div>
+
+
+      <div class="input-field col s12">
+        <input name="endingyear" type="text" class="validate" required>
+        <label for="endingyear">归还年份</label>
+      </div>
+
+      <div class="input-field col s12">
+        <input name="endingmonth" type="text" class="validate" required>
+        <label for="endingmonth">归还月份</label>
+      </div>
+
+      <div class="input-field col s12">
+        <input name="endingday" type="text" class="validate" required>
+        <label for="endingday">归还日期</label>
+      </div>
+
+      <div class="input-field col s12">
+        <input name="endinghour" type="text" class="validate" required>
+        <label for="endinghour">归还时间</label>
+      </div>
+
+      <div class="progress col s6 offset-s3">
+        <div class="determinate" style="width:100%"></div>
+      </div>
+
+
+
+</div> <!-- end division of rows -->
+                  <div class="row valign-wrapper">
+                      <div class="col s12 m8 offset-m2 l8 offset-l2">
+                          <div class="col s9 red-text left valign">
+                              {% for msg in get_flashed_messages() %}
+                              {{ msg }}
+                              {% endfor %}
+                          </div>
+                          <button class="btn col s3 waves-effect waves-light right" type="submit">提交
+                              <i class="material-icons right">send</i>
+                          </button>
+                      </div>
+                  </div>
+              </form>
 </div>
+<script>
+/**
+   * MATERIALIZE Controller code
+   *
+  */
+/** used in selected of department **/
+/** Because they override the browser default, the select styling needs Javascript to run.  **/
+$(document).ready(function() {
+    $('select').material_select();
+});
+
+
+$(document).ready(function() {
+   $('select').material_select();
+   /* used in join-date */
+   $('.datepicker').pickadate({
+     selectMonths: true, // Creates a dropdown to control month
+     selectYears: 15 // Creates a dropdown of 15 years to control year
+   });
+   /* prefilling */
+   Materialize.updateTextFields();
+});
+</script>
 {% endblock %}
