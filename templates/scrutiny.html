@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-    .tips
+    .card-title
     {
         letter-spacing: 5px;
     }
@@ -44,15 +44,16 @@
 <!--/form-->
   </div>
 
-<div class="">
-  <div class="card">
+<div class="row">
+  <div class="card right ">
     <div class="card-content tips">
       <div class="row">
         <span class="card-title left">提示</span>
       </div>
 
       <div class="row tips-content">
-        <span class="card-content" >TIPS HERE</span>
+        <span class="card-content" >点击申请链接</span><br>
+        <span class="card-content" >即可窗口审批</span>
       </div>
     </div>
   </div>
@@ -92,12 +93,12 @@
 
 <div class="modal-footer">
   <form action="{{url_for('approve_mat', id = id_list[i])}}" method="post">
-    <button class="btn col s3 waves-effect waves-light right" type="submit">同意借用
+    <button class="btn col s3 waves-effect waves-light right" type="submit" >同意借用
       <i class="material-icons right">check_circle</i>
     </button>
   </form>
   <form action="{{url_for('refuse_mat', id = id_list[i])}}" method="post">
-    <button class="btn col s3 waves-effect waves-light right" type="submit">否决申请
+    <button class="btn col s3  orange darken-4 waves-effect waves-light right" type="submit">否决申请
       <i class="material-icons right">event_busy</i>
     </button>
   </form>
