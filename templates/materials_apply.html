@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
+<style>
+.input-field label{color: #424242;}
+.input-field input[type=text]:focus + label {
+     color: #000;
+   }
+</style>
 <div class="container">
   <br><br>
   <div class="row">
     <form class="col s12 m8 offset-m2 l8 offset-l2" action="{{ url_for('materials_apply') }}" method="post">
       <h5 class="center"><i class="material-icons">perm_identity</i>物资申请</h5>
       <div class="progress col s12 ">
-        <div class="determinate" style="width:100%"></div>
+        <div class="determinate lime" style="width:100%"></div>
       </div>
 
       <div class="input-field col s12">
@@ -44,8 +50,8 @@
         <!--label>Materialize Select</label-->
       </div>
 
-      <div class="progress col s6 offset-s3">
-        <div class="determinate green darken-1" style="width:100%"></div>
+      <div class="progress col s10 offset-s1 ">
+        <div class="determinate lime" style="width:100%"></div>
       </div>
       <div class="input-field col s12">
         <input name="startyear" type="text" class="validate" required min="2018">
@@ -91,11 +97,6 @@
         <input name="endinghour" type="text" class="validate" required min="0" max="23">
         <label for="endinghour">归还时间(具体到小时，有效值0-23)</label>
       </div>
-
-      <div class="progress col s6 offset-s3">
-        <div class="determinate" style="width:100%"></div>
-      </div>
-
 
 
 </div> <!-- end division of rows -->
