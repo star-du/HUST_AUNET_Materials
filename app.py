@@ -232,6 +232,12 @@ def approve_mat(id):
     flash("审批借出物资成功", category='success')
     return redirect(url_for('scrutiny'))
 
+@app.route('/refuse_mat/<int:id>', methods=['POST'])
+def refuse_mat(id):
+    record_scrutiny_results('material', id, 2, session['id'])
+    printLog("administer {} refused the application for borrowing material.\n application NO: {}, approving time: {}\n ".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    flash("物资借出申请已拒绝", category='success')
+    return redirect(url_for('scrutiny'))
 
 @app.route('/records/')
 def records():

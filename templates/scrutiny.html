@@ -96,6 +96,11 @@
       <i class="material-icons right">check_circle</i>
     </button>
   </form>
+  <form action="{{url_for('refuse_mat', id = id_list[i])}}" method="post">
+    <button class="btn col s3 waves-effect waves-light right" type="submit">否决申请
+      <i class="material-icons right">event_busy</i>
+    </button>
+  </form>
 
 </div>
 </div>

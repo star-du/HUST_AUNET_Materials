@@ -10,3 +10,8 @@ user 神秘人 apply for material: 面具 1个, submitting time: 2018-02-11 17:2
 
 user 委托方 apply for material: 苹果3个, submitting time: 2018-02-11 18:09:45
 
+user 膜法师 apply for material: 黑框眼镜, submitting time: 2018-02-11 21:57:44
+
+administer 村下没有树 refused the application for borrowing material.
+ application NO: 6, approving time: 2018-02-11 22:23:04
+ 

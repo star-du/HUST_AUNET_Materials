@@ -9,7 +9,7 @@ c.execute('''CREATE TABLE ADMIN
        (ID  TEXT(10)    PRIMARY KEY     NOT NULL,
        PASSWORD           TEXT(30)    NOT NULL); ''')
 print ("Table admin created successfully")
-ini_accounts =[('admin','au'), ('1','aaa')]
+ini_accounts =[('admin','au'), ('1','aaa'), ('I_AM_BOSS','showmethemoney'),('村下没有树','666')]
 c.executemany('INSERT INTO ADMIN VALUES (?,?)', ini_accounts)
 print ("admin accounts initialized successfully")
 
@@ -31,7 +31,7 @@ c.execute('''CREATE TABLE MATERIAL
        ADMIN   TEXT ); ''')
 print ("Table material created successfully")
 # 数据库内各项依次表示 处理申请序号、申请人部门、姓名、申请者材料、联系方式、紧随的8项为相应时间、其后是审批状态与审批者信息
-# 其中id为自动递增，加入数据时 **无需显式填写** 
+# 其中id为自动递增，加入数据时 **无需显式填写**
 # START- 与 END- 开头的各项为借出与归还的时间
 # status 用0表示未处理，1表示审批未通过， 2表示审批通过
 # ADMIN 如经过审批，将审批的管理员id记录
