@@ -36,13 +36,12 @@
   {% if 'id' in session %}
   <li>
     <div class="collapsible-header"><i class="material-icons">supervisor_account</i>管理后台</div>
-    <!--
     <div class="collapsible-body" style="padding:0">
       <div class="collection">
-        <a href="#score" class="collection-item modal-trigger"><i class="material-icons left">thumbs_up_down</i>审批申请</a>
-        <a href="#" class="collection-item"><i class="material-icons left">search</i>记录查询</a>
+        <a href="{{ url_for('scrutiny') }}" class="collection-item modal-trigger"><i class="material-icons left">thumbs_up_down</i>审批申请</a>
+        <a href="{{ url_for('records') }}" class="collection-item"><i class="material-icons left">search</i>记录查询</a>
       </div>
-    </div> -->
+    </div>
   </li>
   {% endif %}
 </ul>

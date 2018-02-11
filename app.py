@@ -48,6 +48,25 @@ def applying_material(form):
         database.commit()
 
 
+#检查邮箱格式
+def email_available(email):#email :str 格式
+    pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
+    match = pattern.match(email)
+    if match:
+        return True
+    else:
+        return False
+
+
+#检查姓名格式
+def name_available(name):#name :str 格式
+    pattern = re.compile(r"[\u4e00-\u9fa5]{2,4}")#匹配2到4个汉字
+    match = pattern.match(name)
+    if match:
+        return True
+    else:
+        return False
+
 ######## views  ########
     ''' entry & exit '''
 @app.route('/')
@@ -101,26 +120,13 @@ def materials_apply():
         flash("表格提交成功", category='success')
         return redirect(url_for('personal'))
 
+@app.route('/scrutiny-application/')
+def scrutiny():
+    return render_template('scrutiny.html')
 
-#检查邮箱格式
-def email_available(email):#email :str 格式
-    pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
-    match = pattern.match(email)
-    if match:
-        return True
-    else:
-        return False
-
-
-#检查姓名格式
-def name_available(name):#name :str 格式
-    pattern = re.compile(r"[\u4e00-\u9fa5]{2,4}")#匹配2到4个汉字
-    match = pattern.match(name)
-    if match:
-        return True
-    else:
-        return False
-
+@app.route('/records/')
+def records():
+    return render_template('records.html')
 
 ######## Miscellaneous entries ########
 
