@@ -70,6 +70,20 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
         database.commit()
 
 
+
+#检查字符串中危险的特殊字符
+
+def check_slashes(str):
+    slashes=['\'','\"','%','?','\\',',']
+    for i in str:
+        for t in slashes:
+            if i==t:
+                flash("输入中包含危险的字符如：\' \" % ? \\ ,", category="error")
+                return False
+
+    return True
+
+
 #检查邮箱格式
 def email_available(email):#email :str 格式
     pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
@@ -77,6 +91,7 @@ def email_available(email):#email :str 格式
     if match:
         return True
     else:
+        flash("邮箱格式不正确！", category="error")
         return False
 
 
@@ -87,7 +102,45 @@ def name_available(name):#name :str 格式
     if match:
         return True
     else:
+        flash("不是合法的姓名！", category="error")
         return False
+
+
+#检查日期格式
+def year_availabe(year):
+    t=int(year)
+    if year>=2018:
+        return True
+    else:
+        flash("请输入正确的年份！", category="error")
+        return False
+
+
+def month_available(month):
+    t=int(month)
+    if t>=1 and t<=12:
+        return True
+    else:
+        flash("请输入正确的月份！", category="error")
+        return False
+
+
+def day_available(day):
+    t=int(day)
+    if t>=1 and t<=31:
+        return True
+    else:
+        flash("请输入正确的日期！", category="error")
+        return False
+
+def hour_available(hour):
+    t=int(hour)
+    if t>=0 and t<=23:
+        return True
+    else:
+        flash("请输入正确的小时！",category="error")
+        return False
+
 
 ######## views  ########
     ''' entry & exit '''
@@ -100,21 +153,22 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        session['id'] = request.form['id']
-        session['passwd'] = request.form['passwd']
-        if verify(session['id'], session['passwd']):
-            try:
-                # don't carry your passwd with you
-                assert session.pop('passwd', None) != None
-            except:
-                pass
-            flash("登陆成功！", category='success')
-            return redirect(url_for('personal'))    # TODO: redirect error
-        else:
-            session.pop('id', None)
-            session.pop('passwd', None)
-            #session.pop('filename', None)
-            return redirect(url_for('login'))
+        if check_slashes(request.form['id']) and check_slashes(request.form['passwd']):#检查危险字符
+            session['id'] = request.form['id']
+            session['passwd'] = request.form['passwd']
+            if verify(session['id'], session['passwd']):
+                try:
+                    # don't carry your passwd with you
+                    assert session.pop('passwd', None) != None
+                except:
+                    pass
+                flash("登陆成功！", category='success')
+                return redirect(url_for('personal'))    # TODO: redirect error
+            else:
+                session.pop('id', None)
+                session.pop('passwd', None)
+                #session.pop('filename', None)
+                return redirect(url_for('login'))
 
 @app.route('/home/')
 def personal():
@@ -137,10 +191,18 @@ def materials_apply():
     if request.method == 'GET':
         return render_template('materials_apply.html')
     elif request.method == 'POST':
-        applying_material(request.form)
-        printLog("user {} apply for material: {}, submitting time: {}\n".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", localtime())))
-        flash("表格提交成功", category='success')
-        return redirect(url_for('personal'))
+
+
+        #格式控制
+        if name_available(request.form['name']) and email_available(request.form['contact']) and year_availabe(request.form['startyear']) and \
+        year_availabe(request.form['endingyear'])and month_availabe(request.form['startmonth'])and month_availabe(request.form['endingmonth']) and \
+        day_available(request.form['startday']) and day_available(request.form['endingday']) and hour_available(request.form['starthour']) and\
+        hour_available(request.form['endinghour']):
+
+            applying_material(request.form)
+            printLog("user {} apply for material: {}, submitting time: {}\n".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", localtime())))
+            flash("表格提交成功", category='success')
+            return redirect(url_for('personal'))
 
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
 def scrutiny():
