@@ -151,21 +151,20 @@ def legitimate(dic):
     items_1 = ('name', 'material', 'contact', 'dep')
     time_1 = ('startyear', 'startmonth', 'startday', 'starthour')
     time_2 = ('endingyear', 'endingmonth', 'endingday',  'endinghour')
-    # try:
-    for item in items_1:
-        if not check_slashes(dic[item]):
+    try:
+        if not check_slashes(dic['material']):
             return False
-    if not name_available(dic['name']):
-        return False
-    if not name_available(dic['email']):
-        return False
-    for time in [time_1, time_2]:
-        if not check_time(dic[time[0]], dic[time[1]], dic[time[2]], dic[time[3]]):
+        if not name_available(dic['name']):
             return False
-    return True
-    # except:
-    #     flash('INVALID REQUEST', category='error')
-    #     return False
+        if not email_available(dic['contact']):
+            return False
+        for time in [time_1, time_2]:
+            if not check_time(dic[time[0]], dic[time[1]], dic[time[2]], dic[time[3]]):
+                return False
+        return True
+    except :
+        flash('INVALID REQUEST', category='error')
+        return False
 
 
 ######## views  ########
@@ -225,7 +224,7 @@ def materials_apply():
             flash("表格提交成功", category='success')
             return redirect(url_for('personal'))
         else:
-            return 'WHAT THE HECK?'
+            return render_template('materials_apply.html')
 
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
 def scrutiny():

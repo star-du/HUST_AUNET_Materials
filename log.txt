@@ -24,3 +24,16 @@ user DU apply for material: 1, submitting time: 2018-02-11 21:04:50
 administer admin approved the application for borrowing material.
  application NO: 9, approving time: 2018-02-11 21:05:23
  
+user 我是谁 apply for material: 我也不知道, submitting time: 2018-02-11 21:36:22
+
+user 不存在 apply for material: 假的物品, submitting time: 2018-02-11 21:39:55
+
+user 不存在 apply for material: 假的物品, submitting time: 2018-02-11 21:40:28
+
+user 饶了我 apply for material: 不要出bug了, submitting time: 2018-02-11 21:41:50
+
+user 应该 apply for material: 这次是对的, submitting time: 2018-02-11 21:43:58
+
+administer admin approved the application for borrowing material.
+ application NO: 12, approving time: 2018-02-11 21:44:06
+ 
