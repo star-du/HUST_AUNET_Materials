@@ -69,7 +69,7 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
         c.execute("update %s set ADMIN = ? where ID = ? "%tablename , (admin, indx)  )
         database.commit()
 
-
+        ##### 检查合法性 #####
 
 #检查字符串中危险的特殊字符
 
@@ -141,11 +141,32 @@ def hour_available(hour):
         flash("请输入正确的小时！",category="error")
         return False
 
-# def check_time(year, month, day, hour):
-#     if year_available(year) and month_available(month) and day_available(day) and hour_available(hour):
-#         return True
-#     else:
-#         return False
+def check_time(year, month, day, hour):
+    if year_available(year) and month_available(month) and day_available(day) and hour_available(hour):
+        return True
+    else:
+        return False
+
+def legitimate(dic):
+    items_1 = ('name', 'material', 'contact', 'dep')
+    time_1 = ('startyear', 'startmonth', 'startday', 'starthour')
+    time_2 = ('endingyear', 'endingmonth', 'endingday',  'endinghour')
+    # try:
+    for item in items_1:
+        if not check_slashes(dic[item]):
+            return False
+    if not name_available(dic['name']):
+        return False
+    if not name_available(dic['email']):
+        return False
+    for time in [time_1, time_2]:
+        if not check_time(dic[time[0]], dic[time[1]], dic[time[2]], dic[time[3]]):
+            return False
+    return True
+    # except:
+    #     flash('INVALID REQUEST', category='error')
+    #     return False
+
 
 ######## views  ########
     ''' entry & exit '''
@@ -198,16 +219,13 @@ def materials_apply():
     elif request.method == 'POST':
         #格式控制
         # TODO MAKE IT LOOK GOOD!
-        if name_available(request.form['name']) and email_available(request.form['contact']) and year_available(request.form['startyear']) and \
-        year_available(request.form['endingyear'])and month_available(request.form['startmonth'])and month_available(request.form['endingmonth']) and \
-        day_available(request.form['startday']) and day_available(request.form['endingday']) and hour_available(request.form['starthour']) and\
-        hour_available(request.form['endinghour']):
+        if legitimate(request.form):
             applying_material(request.form)
             printLog("user {} apply for material: {}, submitting time: {}\n".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", localtime())))
             flash("表格提交成功", category='success')
             return redirect(url_for('personal'))
         else:
-            return redirect(url_for('personal'))
+            return 'WHAT THE HECK?'
 
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
 def scrutiny():

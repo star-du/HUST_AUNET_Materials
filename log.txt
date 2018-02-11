@@ -10,3 +10,17 @@ user 神秘人 apply for material: 面具 1个, submitting time: 2018-02-11 17:2
 
 user 委托方 apply for material: 苹果3个, submitting time: 2018-02-11 18:09:45
 
+user 我是谁 apply for material: 妙蛙种子, submitting time: 2018-02-11 20:54:29
+
+user 我是谁 apply for material: 妙蛙种子, submitting time: 2018-02-11 21:01:24
+
+administer admin approved the application for borrowing material.
+ application NO: 7, approving time: 2018-02-11 21:01:32
+ 
+user 我是谁 apply for material: 妙蛙种子, submitting time: 2018-02-11 21:04:01
+
+user DU apply for material: 1, submitting time: 2018-02-11 21:04:50
+
+administer admin approved the application for borrowing material.
+ application NO: 9, approving time: 2018-02-11 21:05:23
+ 
