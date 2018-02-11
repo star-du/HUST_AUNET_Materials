@@ -107,9 +107,9 @@ def name_available(name):#name :str 格式
 
 
 #检查日期格式
-def year_availabe(year):
+def year_available(year):
     t=int(year)
-    if year>=2018:
+    if t>=2018:
         return True
     else:
         flash("请输入正确的年份！", category="error")
@@ -141,6 +141,11 @@ def hour_available(hour):
         flash("请输入正确的小时！",category="error")
         return False
 
+# def check_time(year, month, day, hour):
+#     if year_available(year) and month_available(month) and day_available(day) and hour_available(hour):
+#         return True
+#     else:
+#         return False
 
 ######## views  ########
     ''' entry & exit '''
@@ -191,17 +196,17 @@ def materials_apply():
     if request.method == 'GET':
         return render_template('materials_apply.html')
     elif request.method == 'POST':
-
-
         #格式控制
-        if name_available(request.form['name']) and email_available(request.form['contact']) and year_availabe(request.form['startyear']) and \
-        year_availabe(request.form['endingyear'])and month_availabe(request.form['startmonth'])and month_availabe(request.form['endingmonth']) and \
+        # TODO MAKE IT LOOK GOOD!
+        if name_available(request.form['name']) and email_available(request.form['contact']) and year_available(request.form['startyear']) and \
+        year_available(request.form['endingyear'])and month_available(request.form['startmonth'])and month_available(request.form['endingmonth']) and \
         day_available(request.form['startday']) and day_available(request.form['endingday']) and hour_available(request.form['starthour']) and\
         hour_available(request.form['endinghour']):
-
             applying_material(request.form)
             printLog("user {} apply for material: {}, submitting time: {}\n".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", localtime())))
             flash("表格提交成功", category='success')
+            return redirect(url_for('personal'))
+        else:
             return redirect(url_for('personal'))
 
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
@@ -221,7 +226,7 @@ def scrutiny():
 @app.route('/approve_mat/<int:id>', methods=['POST'])
 def approve_mat(id):
     record_scrutiny_results('material', id, 1, session['id'])
-    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n ".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
     flash("审批借出物资成功", category='success')
     return redirect(url_for('scrutiny'))
 

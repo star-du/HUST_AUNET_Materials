@@ -8,3 +8,5 @@ administer admin approved the application for borrowing material.
  application NO: 1, approving time: 2018-02-11 17:25:58
 user 神秘人 apply for material: 面具 1个, submitting time: 2018-02-11 17:29:22
 
+user 委托方 apply for material: 苹果3个, submitting time: 2018-02-11 18:09:45
+
