@@ -26,18 +26,22 @@
 				<!-- title -->
         <!-- 如果页面定义了block title 会覆盖，否则使用默认的 -->
 				<title>{% block title %}华中大学生社团联合会 物资管理系统{% endblock %} </title>
-
+				<style> /* replace the original background with a higher-resolution material design wallpaper;  */
+				body{
+					background-image:url(/static/img/material-design-color-background.png);
+					background-size: cover;
+				}
+				</style>
 </head>
 
-<body style="background-image:url(/static/img/background_top.jpg);background-repeat:round;">
+<body>
 	<input type="hidden" value="0" id="refresh-flag">
   <!-- [PUBLIC ZONE] PAGE HEADER 导航栏 -->
   <header>
           <div class="navbar-fixed">
               <nav>
                   <div class="nav-wrapper teal">
-                      <!-- Header title will redirect you to the home page 注意：图片需要调整  -->
-                      <a href="{{ url_for('personal') }}" class="brand-logo" title="点击返回主页面" style="height:64px;line-height:64px;vertical-align:central;padding:0px;"><img src="{{ url_for('static', filename='img/unique_weizai.png') }}" style="width:64px; height:64px; margin: auto;" alt="AU-web"/>华中大学生社团联合会 物资管理系统</a>
+                    <img src="{{ url_for('static', filename='img/unique_weizai.png') }}" style="width:64px; height:64px; margin: auto;" alt="AU-web"> <a href="{{ url_for('personal') }}" class="brand-logo" title="点击返回主页面" style="vertical-align:central;padding:0px;">华中大学生社团联合会 物资管理系统</a>
 
                       <!-- 以下if语句中内容 处理已登陆的管理员账号 -->
                       {% if 'id' in session %}
