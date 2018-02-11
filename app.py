@@ -74,7 +74,7 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
 #检查字符串中危险的特殊字符
 
 def check_slashes(str):
-    slashes=['{','}','\'','\"','%','?','\\',',']
+    slashes=['{','}','\'','\"','%','?','\\',',',' ','-']
     for i in str:
         for t in slashes:
             if i==t:
@@ -169,10 +169,12 @@ def login():
                     pass
                 flash("登陆成功！", category='success')
                 return redirect(url_for('personal'))    # TODO: redirect error
+            else:
+                session.pop('id', None)
+                session.pop('passwd', None)
+                #session.pop('filename', None)
+                return redirect(url_for('login'))
         else:
-            session.pop('id', None)
-            session.pop('passwd', None)
-            #session.pop('filename', None)
             return redirect(url_for('login'))
 
 @app.route('/home/')
