@@ -1,4 +1,10 @@
-user du apply for material 1
-user test2 apply for material pen
-user test select apply for material 桌子
-user Mickey apply for material: test_timestamp, submitting time: 2018-02-10 12:49:52
+﻿user master apply for material: 投影仪, submitting time: 2018-02-11 16:28:36
+
+user 蒂姆·库克 apply for material: Iphone x 一台, submitting time: 2018-02-11 17:19:51
+
+user 服部半藏 apply for material: 漫画书, submitting time: 2018-02-11 17:21:08
+
+administer admin approved the application for borrowing material.
+ application NO: 1, approving time: 2018-02-11 17:25:58
+user 神秘人 apply for material: 面具 1个, submitting time: 2018-02-11 17:29:22
+

@@ -1,4 +1,130 @@
 {% extends "base.html" %}
 {% block content %}
-<h4>审批申请页</h4>
+<style>
+    .tips
+    {
+        letter-spacing: 5px;
+    }
+
+    .tips > .tips-content
+    {
+        background-color: #F2F2F2;
+        padding: 20px 20px;
+    }
+
+</style>
+
+<div class="container valign-wrapper">
+  <div class="container">
+<br>
+<!--form-->
+
+<ul class="collapsible" data-collapsible="accordion">
+  <li>
+    <div class="collapsible-header">
+      <i class="material-icons">filter_drama</i>
+      物资借用申请
+      <span class="new badge">{{ num }}</span></div>
+    <div class="collapsible-body collection">
+        {% for i in range(0, num)  %}
+        <a href="#material_{{ id_list[i] }}" class="collection-item"> 来自<b> {{ msgs[i][1] }}  {{ msgs[i][2] }} </b> 的申请</a>
+        {% endfor %}
+    </div>
+  </li>
+  <li>
+    <div class="collapsible-header">
+      <i class="material-icons">place</i>
+      教室借用申请
+      <span class="badge">0</span></div>
+    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+  </li>
+</ul>
+
+
+<!--/form-->
+  </div>
+
+<div class="">
+  <div class="card">
+    <div class="card-content tips">
+      <div class="row">
+        <span class="card-title left">提示</span>
+      </div>
+
+      <div class="row tips-content">
+        <span class="card-content" >TIPS HERE</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+<!-- modal window for materials_scrutiny -->
+{% for i in range(0,num)  %}
+<div id="material_{{id_list[i]}}" class="modal modal-fixed-footer">
+<div class="modal-content">
+<!-- <h4 class="center">{{i}}</h4>
+<div class="divider"></div> -->
+<div class="card">
+      <span class="card-title">  {{ msgs[i][1] }} {{ msgs[i][2] }}借用物资申请</span>
+      <div class="card-content">
+      	<div class="row">
+      		<table class="striped col s12">
+      			<tr>
+      				<th>物资：</th><td> {{ msgs[i][3] }} </td>
+      			</tr>
+      			<tr>
+      				<th>借用时间：</th><td> {{ msgs[i][5] }}年 {{ msgs[i][6] }}月{{ msgs[i][7] }}日  {{ msgs[i][8] }}时 </td>
+      			</tr>
+      			<tr>
+      				<th>预计归还时间：</th><td> {{ msgs[i][9] }}年 {{ msgs[i][10] }}月{{ msgs[i][11] }}日  {{ msgs[i][12] }}时 </td>
+      			</tr>
+      			<tr>
+      				<th>申请人联系方式：</th><td> {{ msgs[i][4] }} </td>
+      			</tr>
+      		</table>
+      	</div>
+      </div>
+      </div>
+</div> <!-- end division for modal-content -->
+
+<div class="modal-footer">
+  <form action="{{url_for('approve_mat', id = id_list[i])}}" method="post">
+    <button class="btn col s3 waves-effect waves-light right" type="submit">同意借用
+      <i class="material-icons right">check_circle</i>
+    </button>
+  </form>
+
+</div>
+</div>
+{% endfor %}
+
+
+
+
+<script>
+/**
+* Materialize Controller code
+*/
+$(document).ready(function(){
+$('.collapsible').collapsible();
+$('.modal').modal();
+$('select').material_select();
+$('.modal').modal({
+  dismissible: true, // Modal can be dismissed by clicking outside of the modal
+  opacity: .5, // Opacity of modal background
+  in_duration: 300, // Transition in duration
+  out_duration: 200, // Transition out duration
+  starting_top: '4%', // Starting top style attribute
+  ending_top: '10%', // Ending top style attribute
+  ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+    console.log(modal, trigger);
+  },
+  complete: function() {} // Callback for Modal close
+});
+});
+</script>
+
 {% endblock %}

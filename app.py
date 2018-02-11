@@ -5,7 +5,7 @@
 ######## importing ########
 from flask import Flask, request, session, render_template, url_for, redirect
 from flask import make_response, flash, jsonify, send_from_directory
-from time import gmtime, strftime
+from time import localtime, strftime
 import sqlite3, os ,re#正则
 
 
@@ -45,6 +45,28 @@ def applying_material(form):
         c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
         # I note that the first null value is _needed_ for the index (the integer-based prime key) to AUTOINCREMENT, and it seems to be the so called 'ROWID' column
         # maybe should check : https://stackoverflow.com/questions/7905859/is-there-an-auto-increment-in-sqlite
+        database.commit()
+
+def get_new_apply(tablename, status_code):
+    ''' Take the name of the table and status_code that is  checked as the arguments, return the list of complete content of matching records. Items in the list are tuples.
+
+    Tablename should be a string and status_code is expected to be integers 0, 1, 2.
+    '''
+    with sqlite3.connect(DATABASE) as database:
+        c = database.cursor()
+        cursor = c.execute('select * from %s where status = %d;'% (tablename, status_code))
+        new_apply_list = cursor.fetchall() # fetchall() returns a list of  tuples
+        return new_apply_list
+
+
+def record_scrutiny_results(tablename, indx, status_code, admin):
+    ''' Take the name of the table, index of application and the renewed status_code, name of admin as arguments, the function updates the status of application on demand.
+
+    Note that under normal condition, status_code should be 1 (representing approval of application) or 2 (representing denial)'''
+    with sqlite3.connect(DATABASE) as database:
+        c = database.cursor()
+        c.execute("update %s set STATUS = ? where ID = ? "%tablename , (status_code, indx)  )
+        c.execute("update %s set ADMIN = ? where ID = ? "%tablename , (admin, indx)  )
         database.commit()
 
 
@@ -116,13 +138,31 @@ def materials_apply():
         return render_template('materials_apply.html')
     elif request.method == 'POST':
         applying_material(request.form)
-        printLog("user {} apply for material: {}, submitting time: {}".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", gmtime())))
+        printLog("user {} apply for material: {}, submitting time: {}\n".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", localtime())))
         flash("表格提交成功", category='success')
         return redirect(url_for('personal'))
 
-@app.route('/scrutiny-application/')
+@app.route('/scrutiny-application/', methods=['GET', 'POST'])
 def scrutiny():
-    return render_template('scrutiny.html')
+    if request.method == 'GET':
+        msgs = get_new_apply('MATERIAL', 0)
+        id_list = [ i[0] for i in msgs ]
+        num = len(id_list)
+        return render_template('scrutiny.html', msgs = msgs, num = num, id_list = id_list)
+        # 此处id_list与 num都是为了解决提取出来的信息的定位问题。
+        # id_list用于反馈时确定更新的申请id，而 msgs中的储存有数据内容
+        # 的元组在该list中的位置则应由序数确定， 因而在scrutiny.html中
+        # 将请求id号与序数做到了一一对应
+        # 有更好方案可以改进
+
+
+@app.route('/approve_mat/<int:id>', methods=['POST'])
+def approve_mat(id):
+    record_scrutiny_results('material', id, 1, session['id'])
+    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    flash("审批借出物资成功", category='success')
+    return redirect(url_for('scrutiny'))
+
 
 @app.route('/records/')
 def records():
