@@ -74,7 +74,7 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
 #检查字符串中危险的特殊字符
 
 def check_slashes(str):
-    slashes=['{','}','\'','\"','%','?','\\',',']
+    slashes=['{','}','\'','\"','%','?','\\',',',' ','-']
     for i in str:
         for t in slashes:
             if i==t:
