@@ -37,3 +37,8 @@ user 应该 apply for material: 这次是对的, submitting time: 2018-02-11 21:
 administer admin approved the application for borrowing material.
  application NO: 12, approving time: 2018-02-11 21:44:06
  
+user 盛情 apply for material: 难却, submitting time: 2018-02-11 21:50:44
+
+administer admin approved the application for borrowing material.
+ application NO: 15, approving time: 2018-02-11 21:50:55
+ 

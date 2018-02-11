@@ -152,8 +152,9 @@ def legitimate(dic):
     time_1 = ('startyear', 'startmonth', 'startday', 'starthour')
     time_2 = ('endingyear', 'endingmonth', 'endingday',  'endinghour')
     try:
-        if not check_slashes(dic['material']):
-            return False
+        for item in items_1:
+            if not check_slashes(dic[item]):
+                return False
         if not name_available(dic['name']):
             return False
         if not email_available(dic['contact']):
