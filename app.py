@@ -54,7 +54,7 @@ def get_new_apply(tablename, status_code):
     '''
     with sqlite3.connect(DATABASE) as database:
         c = database.cursor()
-        cursor = c.execute('select * from %s where status = %d;'% (tablename, status_code))
+        cursor = c.execute('select * from %s where status = %d;'% (tablename, status_code)) # 这里不是binding，好像不能用？占位
         new_apply_list = cursor.fetchall() # fetchall() returns a list of  tuples
         return new_apply_list
 
@@ -185,9 +185,10 @@ def login():
                     # don't carry your passwd with you
                     assert session.pop('passwd', None) != None
                 except:
-                    pass
-                flash("登陆成功！", category='success')
-                return redirect(url_for('personal'))    # TODO: redirect error
+                    session.pop('id', None)
+                    return redirect(url_for('login'))
+                flash("着陆成功！", category='success')
+                return redirect(url_for('personal'))   
             else:
                 session.pop('id', None)
                 session.pop('passwd', None)
