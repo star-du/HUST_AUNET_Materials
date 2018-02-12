@@ -74,10 +74,9 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
 #检查字符串中危险的特殊字符
 
 def check_slashes(str):
-    slashes=['{','}','\'','\"','%','?','\\',',',' ','-']
+    slashes=['{','}','\'','\"','%','?','\\',',']
     for i in str:
-        for t in slashes:
-            if i==t:
+            if i in slashes:
                 flash("输入中包含非法字符", category="error")
                 return False
 
@@ -155,10 +154,9 @@ def legitimate(dic):
         for item in items_1:
             if not check_slashes(dic[item]):
                 return False
-        if not name_available(dic['name']):
+        if not name_available(dic['name']) and email_available(dic['contact']):
             return False
-        if not email_available(dic['contact']):
-            return False
+            # keep me wondering why it's "and" instead of "or"
         for time in [time_1, time_2]:
             if not check_time(dic[time[0]], dic[time[1]], dic[time[2]], dic[time[3]]):
                 return False
@@ -193,7 +191,6 @@ def login():
             else:
                 session.pop('id', None)
                 session.pop('passwd', None)
-                #session.pop('filename', None)
                 return redirect(url_for('login'))
         else:
             return redirect(url_for('login'))
@@ -246,7 +243,7 @@ def scrutiny():
 @app.route('/approve_mat/<int:id>', methods=['POST'])
 def approve_mat(id):
     record_scrutiny_results('material', id, 1, session['id'])
-    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n ".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
     flash("审批借出物资成功", category='success')
     return redirect(url_for('scrutiny'))
 

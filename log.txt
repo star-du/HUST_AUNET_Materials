@@ -14,3 +14,15 @@ user 膜法师 apply for material: 黑框眼镜, submitting time: 2018-02-11 21:
 
 administer 村下没有树 refused the application for borrowing material.
  application NO: 6, approving time: 2018-02-11 22:23:04
+administer 村下没有树 approved the application for borrowing material.
+ application NO: 5, approving time: 2018-02-11 22:49:08
+ 
+user 张三丰 apply for material: 太极剑, submitting time: 2018-02-12 11:16:09
+
+user 小李 apply for material: 奥斯卡奖杯_2座, submitting time: 2018-02-12 11:36:11
+
+user 空格杀手 apply for material: 空格 1个 ---- 2个, submitting time: 2018-02-12 11:43:12
+
+administer I_AM_BOSS approved the application for borrowing material.
+ application NO: 9, approving time: 2018-02-12 11:56:18
+
