@@ -124,6 +124,7 @@ def name_available(name):#name :str 格式
 
 
 #检查日期格式
+#original version
 # def year_available(year):
 #     if not isinstance(year, int):
 #         flash("请输入正确的年份！", category="error")
@@ -163,13 +164,14 @@ def name_available(name):#name :str 格式
 #         flash("请输入正确的小时！",category="error")
 #         return False
 
-def check_time(year, month, day, hour):
+def struct(year, month, day, hour):
+    ''' Take **strings** as arguments, return a struct_time instance if it represents time with given format, else return _None_ '''
     try:
-        strptime(year + ' ' + month + ' ' + day + ' ' + hour, '%Y %m %d %H')
-        return True
+        struct_time1 = strptime(year + ' ' + month + ' ' + day + ' ' + hour, '%Y %m %d %H')
+        return struct_time1
     except:
         flash("请输入正确的时间信息！",category="error")
-        return False
+        return None
 
 def legitimate(dic):
     items_1 = ('name', 'material', 'contact', 'dep')
@@ -182,9 +184,15 @@ def legitimate(dic):
         if not name_available(dic['name']) and email_available(dic['contact']):
             return False
             # keep me wondering why it's "and" instead of "or"
-        for time in [time_1, time_2]:
-            if not check_time(dic[time[0]], dic[time[1]], dic[time[2]], dic[time[3]]):
-                return False
+        start = [dic[x] for x in time_1]
+        end = [dic[x] for x in time_2]
+        t1 = struct(*start)
+        t2 = struct(*end)
+        if t1 == None or t2 == None:
+            return False
+        elif t2 <= t1 or t1 <= localtime():
+            flash("请输入正确的时间信息！",category="error")
+            return False
         return True
     except :
         flash('INVALID REQUEST', category='error')
