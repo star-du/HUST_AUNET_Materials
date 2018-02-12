@@ -14,7 +14,7 @@
 
 </style>
 
-<div class="container valign-wrapper">
+<div class="container">
   <div class="container">
 <br>
 <!--form-->
@@ -22,18 +22,21 @@
 <ul class="collapsible" data-collapsible="accordion">
   <li>
     <div class="collapsible-header">
-      <i class="material-icons">filter_drama</i>
+      <i class="material-icons">local_activity</i>
       物资借用申请
-      <span class="new badge">{{ num }}</span></div>
-    <div class="collapsible-body collection">
+      <span class="new badge blue">{{ num }}</span></div>
+<div class="collapsible-body">
+    <div class="collection">
+
         {% for i in range(0, num)  %}
-        <a href="#material_{{ id_list[i] }}" class="collection-item"> 来自<b> {{ msgs[i][1] }}  {{ msgs[i][2] }} </b> 的申请</a>
+        <a href="#material_{{ id_list[i] }}" class="collection-item dismissable"> 来自<b> {{ msgs[i][1] }}  {{ msgs[i][2] }} </b> 的申请</a>
         {% endfor %}
+  </div>
     </div>
   </li>
   <li>
     <div class="collapsible-header">
-      <i class="material-icons">place</i>
+      <i class="material-icons">domain</i>
       教室借用申请
       <span class="badge">0</span></div>
     <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
@@ -41,19 +44,19 @@
 </ul>
 
 
-<!--/form-->
+
   </div>
 
 <div class="row">
-  <div class="card right ">
+  <div class="card right col s5 ">
     <div class="card-content tips">
       <div class="row">
         <span class="card-title left">提示</span>
       </div>
 
       <div class="row tips-content">
-        <span class="card-content" >点击申请链接</span><br>
-        <span class="card-content" >即可窗口审批</span>
+        <span class="card-content " >点击申请链接,即可窗口审批<i class="material-icons small">aspect_ratio</i></span><br>
+        <span class="card-content" ><i class="material-icons small">arrow_back</i>返回主页面请点击导航栏</span>
       </div>
     </div>
   </div>

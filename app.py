@@ -7,6 +7,7 @@ from flask import Flask, request, session, render_template, url_for, redirect
 from flask import make_response, flash, jsonify, send_from_directory
 from time import localtime, strftime, strptime
 from datetime import date, timedelta
+from functools import wraps
 import sqlite3, os ,re#正则
 
 
@@ -86,6 +87,15 @@ def get_records(tablename, year, month):
         records = cursor.fetchall()
         return records
 
+def login_verify(to_be_decorated):
+    '''  check-in decorator  '''
+    @wraps(to_be_decorated)
+    def decorated(*args, **kwargs):
+        if 'id' not in session:
+            flash("请登录！", category="error")     # NOTE: flash-msg show in the NEXT page
+            return redirect(url_for('login'))
+        return to_be_decorated(*args, **kwargs)
+    return decorated
 
         ##### 检查合法性 #####
 
@@ -260,7 +270,9 @@ def materials_apply():
         else:
             return render_template('materials_apply.html')
 
+
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
+@login_verify # to make sure non-administer can not access this page
 def scrutiny():
     if request.method == 'GET':
         msgs = get_new_apply('MATERIAL', 0)
@@ -275,6 +287,7 @@ def scrutiny():
 
 
 @app.route('/approve_mat/<int:id>', methods=['POST'])
+@login_verify
 def approve_mat(id):
     record_scrutiny_results('material', id, 1, session['id'])
     printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
@@ -282,13 +295,15 @@ def approve_mat(id):
     return redirect(url_for('scrutiny'))
 
 @app.route('/refuse_mat/<int:id>', methods=['POST'])
+@login_verify
 def refuse_mat(id):
     record_scrutiny_results('material', id, 2, session['id'])
     printLog("administer {} refused the application for borrowing material.\n application NO: {}, approving time: {}\n ".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
-    flash("物资借出申请已拒绝", category='success')
+    flash("物资借出申请已拒绝", category='info')
     return redirect(url_for('scrutiny'))
 
 @app.route('/records/')
+@login_verify
 def records():
     results = get_records('material',expire_date().year, expire_date().month)
     num = len(results)
