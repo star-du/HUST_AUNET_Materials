@@ -5,7 +5,8 @@
 ######## importing ########
 from flask import Flask, request, session, render_template, url_for, redirect
 from flask import make_response, flash, jsonify, send_from_directory
-from time import localtime, strftime
+from time import localtime, strftime, strptime
+from datetime import date, timedelta
 import sqlite3, os ,re#正则
 
 
@@ -69,6 +70,23 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
         c.execute("update %s set ADMIN = ? where ID = ? "%tablename , (admin, indx)  )
         database.commit()
 
+def expire_date():
+    a_month = timedelta(days=31)
+    expire_date = date.today() - a_month
+    return expire_date
+
+def get_records(tablename, year, month):
+    ''' Take the name of the table and year, month that is checked as the arguments, return the list of complete content of matching (i.e. the ending time is later than the given one) records. Items in the list are tuples.
+
+    Tablename should be a string and year, month is expected to be integers.
+    '''
+    with sqlite3.connect(DATABASE) as database:
+        c = database.cursor()
+        cursor = c.execute('select * from %s where endingyear >= %d and endingmonth >= %d;'% (tablename, year, month))
+        records = cursor.fetchall()
+        return records
+
+
         ##### 检查合法性 #####
 
 #检查字符串中危险的特殊字符
@@ -106,44 +124,51 @@ def name_available(name):#name :str 格式
 
 
 #检查日期格式
-def year_available(year):
-    t=int(year)
-    if t>=2018:
-        return True
-    else:
-        flash("请输入正确的年份！", category="error")
-        return False
-
-
-def month_available(month):
-    t=int(month)
-    if t>=1 and t<=12:
-        return True
-    else:
-        flash("请输入正确的月份！", category="error")
-        return False
-
-
-def day_available(day):
-    t=int(day)
-    if t>=1 and t<=31:
-        return True
-    else:
-        flash("请输入正确的日期！", category="error")
-        return False
-
-def hour_available(hour):
-    t=int(hour)
-    if t>=0 and t<=23:
-        return True
-    else:
-        flash("请输入正确的小时！",category="error")
-        return False
+# def year_available(year):
+#     if not isinstance(year, int):
+#         flash("请输入正确的年份！", category="error")
+#         return False
+#     if not year >= 2000:
+#         flash("请输入正确的年份！", category="error")
+#         return False
+#     else:
+#         return True
+#
+#
+# def month_available(month):
+#     if not isinstance(month, int):
+#         flash("请输入正确的月份！", category="error")
+#         return False
+#     if not month in range(1,13):
+#         flash("请输入正确的月份！", category="error")
+#         return False
+#     else:
+#         return True
+#
+# def day_available(day):
+#     if not isinstance(month, int):
+#         flash("请输入正确的月份！", category="error")
+#         return False
+#     if not day in range(1, 31):
+#         flash("请输入正确的月份！", category="error")
+#         return False
+#     else:
+#         return True
+#
+# def hour_available(hour):
+#     t=int(hour)
+#     if t>=0 and t<=23:
+#         return True
+#     else:
+#         flash("请输入正确的小时！",category="error")
+#         return False
 
 def check_time(year, month, day, hour):
-    if year_available(year) and month_available(month) and day_available(day) and hour_available(hour):
+    try:
+        strptime(year + ' ' + month + ' ' + day + ' ' + hour, '%Y %m %d %H')
         return True
-    else:
+    except:
+        flash("请输入正确的时间信息！",category="error")
         return False
 
 def legitimate(dic):
@@ -188,7 +213,7 @@ def login():
                     session.pop('id', None)
                     return redirect(url_for('login'))
                 flash("着陆成功！", category='success')
-                return redirect(url_for('personal'))   
+                return redirect(url_for('personal'))
             else:
                 session.pop('id', None)
                 session.pop('passwd', None)
@@ -257,7 +282,9 @@ def refuse_mat(id):
 
 @app.route('/records/')
 def records():
-    return render_template('records.html')
+    results = get_records('material',expire_date().year, expire_date().month)
+    num = len(results)
+    return render_template('records.html', msgs = results, num = num)
 
 ######## Miscellaneous entries ########
 

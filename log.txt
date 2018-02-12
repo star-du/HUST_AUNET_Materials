@@ -26,3 +26,24 @@ user 空格杀手 apply for material: 空格 1个 ---- 2个, submitting time: 20
 administer I_AM_BOSS approved the application for borrowing material.
  application NO: 9, approving time: 2018-02-12 11:56:18
 
+user 学渣甲 apply for material: 考试答案 8套, submitting time: 2018-02-12 15:24:53
+
+user 学渣甲 apply for material: 考试答案 8套, submitting time: 2018-02-12 15:25:33
+
+administer 村下没有树 refused the application for borrowing material.
+ application NO: 11, approving time: 2018-02-12 15:25:45
+ 
+user 学渣甲 apply for material: 考试答案 8套, submitting time: 2018-02-12 15:26:41
+
+user 学渣甲 apply for material: 考试答案 8套, submitting time: 2018-02-12 15:27:49
+
+user 学渣甲 apply for material: 考试答案 8套, submitting time: 2018-02-12 15:27:59
+
+user 正确 apply for material: 的日期, submitting time: 2018-02-12 15:31:30
+
+user 正确 apply for material: 的日期, submitting time: 2018-02-12 15:31:50
+
+user 毒性 apply for material: 有毒, submitting time: 2018-02-12 15:57:58
+
+user 某人 apply for material: 书, submitting time: 2018-02-12 16:13:08
+

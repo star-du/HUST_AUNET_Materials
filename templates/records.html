@@ -1,4 +1,90 @@
 {% extends "base.html" %}
 {% block content %}
-<h4>记录查询页</h4>
+
+<div class="container">
+<h4 class="center">申请记录</h4>
+<div class="divider"></div>
+<!-- modal window for materials_scrutiny -->
+{% for i in range(0,num)  %}
+<div class="container">
+
+<div class="row">
+<div class="card col s12">
+      <div class="card-title" style="margin-top:0.5em;">  申请编号:{{ msgs[i][0] }}
+        {% if msgs[i][13] == 0 %}
+        <i class="material-icons right small"></i>
+        {% elif msgs[i][13] == 1 %}
+         <i class="material-icons  right small">check_circle</i>
+        {% elif msgs[i][13] == 2 %}
+        <i class="material-icons right small">event_busy</i>
+        {% endif %}  </div>
+      <div class="card-content">
+      	<div class="row">
+      		<table class="striped col s12">
+
+            <tr>
+              <th>部门：</th><td> {{ msgs[i][1] }}</td>
+              <th>姓名：</th><td> {{ msgs[i][2] }}</td>
+            </tr>
+
+            <tr>
+      				<th>物资：</th><td> {{ msgs[i][3] }} </td>
+              <th>申请人联系方式：</th><td> {{ msgs[i][4] }} </td>
+      			</tr>
+
+            <tr>
+      				<th>借用时间：</th><td> {{ msgs[i][5] }}年 {{ msgs[i][6] }}月{{ msgs[i][7] }}日  {{ msgs[i][8] }}时 </td>
+      				<th>预计归还时间：</th><td> {{ msgs[i][9] }}年 {{ msgs[i][10] }}月{{ msgs[i][11] }}日  {{ msgs[i][12] }}时 </td>
+      			</tr>
+
+            <tr>
+              <th>审批状态：</th>
+              {% if msgs[i][13] == 0 %}
+              <td> 待审批 </td>
+              {% elif msgs[i][13] == 1 %}
+              <td> 申请通过 </td>
+              {% elif msgs[i][13] == 2 %}
+              <td> 申请拒绝 </td>
+              {% endif %}
+              {% if msgs[i][14] != None  %}
+              <th>审批人：</th><td> {{ msgs[i][14] }}</td>
+              {% endif %}
+                          </tr>
+
+      		</table>
+      	</div>
+      </div>
+      </div>
+
+
+</div>
+</div>
+{% endfor %}
+
+
+
+</div>
+<script>
+/**
+* Materialize Controller code
+*/
+$(document).ready(function(){
+$('.collapsible').collapsible();
+$('.modal').modal();
+$('select').material_select();
+// $('.modal').modal({
+//   dismissible: true, // Modal can be dismissed by clicking outside of the modal
+//   opacity: .5, // Opacity of modal background
+//   in_duration: 300, // Transition in duration
+//   out_duration: 200, // Transition out duration
+//   starting_top: '4%', // Starting top style attribute
+//   ending_top: '10%', // Ending top style attribute
+//   ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+//     console.log(modal, trigger);
+//   },
+//   complete: function() {} // Callback for Modal close
+// });
+});
+</script>
+
 {% endblock %}
