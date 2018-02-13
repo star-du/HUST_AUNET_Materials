@@ -123,8 +123,8 @@ def email_available(email):#email :str 格式
 
 
 #检查姓名格式
-def name_available(name):#name :str 格式
-    pattern = re.compile(r"[\u4e00-\u9fa5]{2,4}")#匹配2到4个汉字
+def name_available(name):   # name: str 格式
+    pattern = re.compile(r"[\u4e00-\u9fa5]{2,4}")   # 匹配2到4个汉字
     match = pattern.match(name)
     if match:
         return True
@@ -174,6 +174,8 @@ def name_available(name):#name :str 格式
 #         flash("请输入正确的小时！",category="error")
 #         return False
 
+# TODO: improper naming
+#       not self-explaining
 def struct(year, month, day, hour):
     ''' Take **strings** as arguments, return a struct_time instance if it represents time with given format, else return _None_ '''
     try:
@@ -183,6 +185,7 @@ def struct(year, month, day, hour):
         flash("请输入正确的时间信息！",category="error")
         return None
 
+# TODO: this one too
 def legitimate(dic):
     items_1 = ('name', 'material', 'contact', 'dep')
     time_1 = ('startyear', 'startmonth', 'startday', 'starthour')
@@ -264,7 +267,11 @@ def materials_apply():
         # TODO MAKE IT LOOK GOOD!
         if legitimate(request.form):
             applying_material(request.form)
-            printLog("user {} apply for material: {}, submitting time: {}\n".format(request.form['name'], request.form['material'], strftime("%Y-%m-%d %H:%M:%S", localtime())))
+            # NOTE: should not exceed 79 chars (per line)
+            printLog("user {} apply for material: {}, submitting time: {}\n".format(
+                request.form['name'], request.form['material'],
+                strftime("%Y-%m-%d %H:%M:%S", localtime()) )
+            )
             flash("表格提交成功", category='success')
             return redirect(url_for('personal'))
         else:
