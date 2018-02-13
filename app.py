@@ -73,7 +73,8 @@ def get_new_apply(tablename, status_code):
     with sqlite3.connect(DATABASE) as database:
         c = database.cursor()
         cursor = c.execute('select * from %s where status = %d;'% (tablename, status_code)) # 这里不是binding，好像不能用？占位
-        new_apply_list = cursor.fetchall() # fetchall() returns a list of  tuples
+        new_apply_list = cursor.fetchall()
+        # fetchall() returns a list of  tuples
         return new_apply_list
 
 
@@ -189,9 +190,8 @@ def name_available(name):   # name: str 格式
 #         flash("请输入正确的小时！",category="error")
 #         return False
 
-# TODO: bad naming
-#       not self-explaining
-def struct(year, month, day, hour):
+
+def struct_timing(year, month, day, hour):
     '''
     Take **strings** as arguments, return a struct_time instance if it
     represents time with given format, else return `None`
@@ -200,12 +200,15 @@ def struct(year, month, day, hour):
         struct_time1 = strptime(year + ' ' + month + ' ' + day + ' ' + hour,
                                 '%Y %m %d %H')
         return struct_time1
-    except: # TODO: except ????: avoid using general except
-        flash("请输入正确的时间信息！",category="error")
+    except ValueError:
+        flash("请输入正确的时间信息！", category="error")
         return None
+    except:
+        flash("访问错误！", category="error")
 
-# TODO: this one too
-def legitimate(dic):
+
+def form_legitimate(dic):
+    """Check the legitimacy of the request form."""
     items_1 = ('name', 'material', 'contact', 'dep')
     time_1 = ('startyear', 'startmonth', 'startday', 'starthour')
     time_2 = ('endingyear', 'endingmonth', 'endingday',  'endinghour')
@@ -218,12 +221,12 @@ def legitimate(dic):
             # keep me wondering why it's "and" instead of "or"
         start = [dic[x] for x in time_1]
         end = [dic[x] for x in time_2]
-        t1 = struct(*start)
-        t2 = struct(*end)
+        t1 = struct_timing(*start)
+        t2 = struct_timing(*end)
         if t1 == None or t2 == None:
             return False
         elif t2 <= t1 or t1 <= localtime():
-            flash("请输入正确的时间信息！",category="error")
+            flash("请输入正确的时间信息！", category="error")
             return False
         return True
     except :
@@ -235,7 +238,7 @@ def legitimate(dic):
     ''' entry & exit '''
 @app.route('/')
 def index():
-    return redirect(url_for('login'))
+    return redirect(url_for('personal'))
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -285,8 +288,7 @@ def materials_apply():
         return render_template('materials_apply.html')
     elif request.method == 'POST':
         #格式控制
-        # TODO MAKE IT LOOK GOOD!
-        if legitimate(request.form):
+        if form_legitimate(request.form):
             applying_material(request.form)
             # NOTE: should not exceed 79 chars (per line)
             printLog("user {} apply for material: {}, submitting time: {}\n".format(
@@ -349,4 +351,3 @@ def opensource_info():
 if __name__ == '__main__':
 
     app.run(host = "127.0.0.1", debug = True)
-

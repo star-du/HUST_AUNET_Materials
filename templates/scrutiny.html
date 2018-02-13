@@ -25,11 +25,11 @@
       <i class="material-icons">local_activity</i>
       物资借用申请
       <span class="new badge blue">{{ num }}</span></div>
-<div class="collapsible-body">
-    <div class="collection">
+<div class="collapsible-body white">
+    <div class="collection card-panel">
 
         {% for i in range(0, num)  %}
-        <a href="#material_{{ id_list[i] }}" class="collection-item dismissable"> 来自<b> {{ msgs[i][1] }}  {{ msgs[i][2] }} </b> 的申请</a>
+        <a href="#material_{{ id_list[i] }}" class="collection-item dismissable"> <b> {{ msgs[i][1] }}  {{ msgs[i][2] }} </b> 借用 <i>{{ msgs[i][3] }}</i> 的申请</a>
         {% endfor %}
   </div>
     </div>
@@ -39,7 +39,7 @@
       <i class="material-icons">domain</i>
       教室借用申请
       <span class="badge">0</span></div>
-    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+    <div class="collapsible-body white"><p>Lorem ipsum dolor sit amet.</p></div>
   </li>
 </ul>
 
