@@ -243,7 +243,7 @@ def login():
         return render_template('login.html')
     elif request.method == 'POST':
         #检查危险字符
-        if check_slashes(request.form['id'])
+        if check_slashes(request.form['id']) \
                 and check_slashes(request.form['passwd']):
             session['id'] = request.form['id']
             session['passwd'] = request.form['passwd']

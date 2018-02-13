@@ -106,8 +106,9 @@
                   <div class="row valign-wrapper">
                       <div class="col s12 m8 offset-m2 l8 offset-l2">
                           <div class="col s9 red-text left valign">
+                              <!-- suppress this! -->
                               {% for msg in get_flashed_messages() %}
-                              {{ msg }}
+                              {{ msg if False }}
                               {% endfor %}
                           </div>
                           <button class="btn col s3 waves-effect waves-light right" type="submit">提交
