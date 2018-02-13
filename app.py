@@ -41,16 +41,32 @@ def printLog(log):
 
 def applying_material(form):
     ''' Use to dump the applying information into the database, using the request.form as argument '''
-    mat_form = [(form['dep'], form['name'], form['material'], form['contact'], form['startyear'], form['startmonth'], form['startday'], form['starthour'], form['endingyear'], form['endingmonth'], form['endingday'], form['endinghour'])]
+    mat_form = [
+        (
+            form['dep'], form['name'], form['material'], form['contact'],
+            form['startyear'], form['startmonth'], form['startday'],
+            form['starthour'], form['endingyear'], form['endingmonth'],
+            form['endingday'], form['endinghour']
+        )
+    ]
     with sqlite3.connect(DATABASE) as database:
         c = database.cursor()
         c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
         # I note that the first null value is _needed_ for the index (the integer-based prime key) to AUTOINCREMENT, and it seems to be the so called 'ROWID' column
         # maybe should check : https://stackoverflow.com/questions/7905859/is-there-an-auto-increment-in-sqlite
+        # ANSWER: you can specify witch field to fill with the syntax:
+        #     INSERT INTO MATERIAL (
+        #         HEADERS, OTHER_HEADERS, ...
+        #     )
+        #     VALUES (...);
+        # leaving the ID field
         database.commit()
 
 def get_new_apply(tablename, status_code):
-    ''' Take the name of the table and status_code that is  checked as the arguments, return the list of complete content of matching records. Items in the list are tuples.
+    '''
+    Take the name of the table and status_code that is checked as the
+    arguments, return the list of complete content of matching records. Items
+    in the list are tuples.
 
     Tablename should be a string and status_code is expected to be integers 0, 1, 2.
     '''
@@ -101,18 +117,17 @@ def login_verify(to_be_decorated):
 
 #检查字符串中危险的特殊字符
 
-def check_slashes(str):
+def check_slashes(plain):   # `str` is python reserved keyword, DON'T use it
     slashes=['{','}','\'','\"','%','?','\\',',']
-    for i in str:
+    for i in plain:
             if i in slashes:
                 flash("输入中包含非法字符", category="error")
                 return False
-
     return True
 
 
 #检查邮箱格式
-def email_available(email):#email :str 格式
+def email_available(email): #email: str 格式
     pattern = re.compile(r"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$")
     match = pattern.match(email)
     if match:
@@ -174,14 +189,18 @@ def name_available(name):   # name: str 格式
 #         flash("请输入正确的小时！",category="error")
 #         return False
 
-# TODO: improper naming
+# TODO: bad naming
 #       not self-explaining
 def struct(year, month, day, hour):
-    ''' Take **strings** as arguments, return a struct_time instance if it represents time with given format, else return _None_ '''
+    '''
+    Take **strings** as arguments, return a struct_time instance if it
+    represents time with given format, else return `None`
+    '''
     try:
-        struct_time1 = strptime(year + ' ' + month + ' ' + day + ' ' + hour, '%Y %m %d %H')
+        struct_time1 = strptime(year + ' ' + month + ' ' + day + ' ' + hour,
+                                '%Y %m %d %H')
         return struct_time1
-    except:
+    except: # TODO: except ????: avoid using general except
         flash("请输入正确的时间信息！",category="error")
         return None
 
@@ -223,7 +242,9 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        if check_slashes(request.form['id']) and check_slashes(request.form['passwd']):#检查危险字符
+        #检查危险字符
+        if check_slashes(request.form['id'])
+                and check_slashes(request.form['passwd']):
             session['id'] = request.form['id']
             session['passwd'] = request.form['passwd']
             if verify(session['id'], session['passwd']):
@@ -285,7 +306,8 @@ def scrutiny():
         msgs = get_new_apply('MATERIAL', 0)
         id_list = [ i[0] for i in msgs ]
         num = len(id_list)
-        return render_template('scrutiny.html', msgs = msgs, num = num, id_list = id_list)
+        return render_template('scrutiny.html', msgs=msgs,
+                               num=num, id_list=id_list)
         # 此处id_list与 num都是为了解决提取出来的信息的定位问题。
         # id_list用于反馈时确定更新的申请id，而 msgs中的储存有数据内容
         # 的元组在该list中的位置则应由序数确定， 因而在scrutiny.html中
@@ -327,3 +349,4 @@ def opensource_info():
 if __name__ == '__main__':
 
     app.run(host = "127.0.0.1", debug = True)
+
