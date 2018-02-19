@@ -74,3 +74,8 @@ administer 村下没有树 refused the application for borrowing material.
 administer 村下没有树 refused the application for borrowing material.
  application NO: 16, approving time: 2018-02-13 16:01:39
  
+administer 村下没有树 approved the application for borrowing material.
+ application NO: 19, approving time: 2018-02-13 16:10:48
+
+user 陈独秀 apply for material: 新青年 1本, submitting time: 2018-02-13 16:16:17
+

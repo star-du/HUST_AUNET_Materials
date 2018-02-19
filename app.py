@@ -8,12 +8,14 @@ from flask import make_response, flash, jsonify, send_from_directory
 from time import localtime, strftime, strptime
 from datetime import date, timedelta
 from functools import wraps
-import sqlite3, os ,re#正则
+from email_module import mail
+
+from glob_var import *
+import sqlite3, re#正则
 
 
-######## global configuration ########
-SYSTEM_ROOT = os.path.split(os.path.realpath(__file__))[0]
-DATABASE = os.path.join(SYSTEM_ROOT, 'data.db')
+
+
 ######## initializaton ########
 
 app = Flask(__name__)
@@ -37,10 +39,14 @@ def verify(id,passwd):
 def printLog(log):
     ''' Use to write log for user's behaviour '''
     with open("log.txt",encoding="utf-8", mode='a') as f:
-        f.write(log+"\n")
+        f.write(log)
+        f.write("operation time: {}\n".format(strftime("%Y-%m-%d %H:%M:%S", localtime())))
+        print("ADD log")
 
 def applying_material(form):
-    ''' Use to dump the applying information into the database, using the request.form as argument '''
+    ''' Use to dump the applying information into the database, using the request.form as argument.
+
+    Return True, if the form is successfully added to database and the email is sent. Else, False is returned.'''
     mat_form = [
         (
             form['dep'], form['name'], form['material'], form['contact'],
@@ -51,16 +57,21 @@ def applying_material(form):
     ]
     with sqlite3.connect(DATABASE) as database:
         c = database.cursor()
-        c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
-        # I note that the first null value is _needed_ for the index (the integer-based prime key) to AUTOINCREMENT, and it seems to be the so called 'ROWID' column
-        # maybe should check : https://stackoverflow.com/questions/7905859/is-there-an-auto-increment-in-sqlite
-        # ANSWER: you can specify witch field to fill with the syntax:
-        #     INSERT INTO MATERIAL (
-        #         HEADERS, OTHER_HEADERS, ...
-        #     )
-        #     VALUES (...);
-        # leaving the ID field
-        database.commit()
+        try:
+            c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
+            database.commit()
+            hint = "社联小伙伴{}，你好！\n你已成功提交物资借出申请，请勿重复提交!\n本邮件为自动发出，请勿回复。\n".format(form['name'])
+        except:
+            flash("申请提交失败，请重试或联系技术人员。", category="error")
+            # 如果出现数据无法添加到数据库（可能由于检查合理性时未检查出的错误）
+            return False
+        else:
+            result = mail(hint, (form['contact'],))
+            if not result: # 如果邮件发送出现问题
+                flash("邮件发送失败，请联系技术人员。", category="error")
+                return False
+            return True
+
 
 def get_new_apply(tablename, status_code):
     '''
@@ -86,7 +97,18 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
         c = database.cursor()
         c.execute("update %s set STATUS = ? where ID = ? "%tablename , (status_code, indx)  )
         c.execute("update %s set ADMIN = ? where ID = ? "%tablename , (admin, indx)  )
+        # 提取审批后的记录储存于info中用于发送邮件
+        cursor = c.execute('select * from %s where ID = %d;'% (tablename, indx))
+        info = cursor.fetchall()[0]
         database.commit()
+        if status_code == 1:
+            feedback = "社联小伙伴{}，你好！\n你提交的借用{}的申请已批准。\n借出时间：{}年{}月{}日 {}时,请在{}年{}月{}日之前归还。 \n本邮件为自动发出，请勿回复。\n".format(info[2], info[3],info[5],info[6],info[7],info[8],info[9],info[10],info[11],info[12])
+        elif status_code == 2:
+            feedback = "社联小伙伴{}，你好！\n很遗憾，你借用{}的申请未能通过！\n本邮件为自动发出，请勿回复。\n".format(info[2], info[3])
+        result = mail(feedback, (info[4],))
+        if not result: # 如果邮件发送出现问题
+            flash("邮件发送失败，请联系技术人员。", category="error")
+
 
 def expire_date():
     a_month = timedelta(days=31)
@@ -147,48 +169,6 @@ def name_available(name):   # name: str 格式
     else:
         flash("不是合法的姓名！", category="error")
         return False
-
-
-#检查日期格式
-#original version
-# def year_available(year):
-#     if not isinstance(year, int):
-#         flash("请输入正确的年份！", category="error")
-#         return False
-#     if not year >= 2000:
-#         flash("请输入正确的年份！", category="error")
-#         return False
-#     else:
-#         return True
-#
-#
-# def month_available(month):
-#     if not isinstance(month, int):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     if not month in range(1,13):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     else:
-#         return True
-#
-# def day_available(day):
-#     if not isinstance(month, int):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     if not day in range(1, 31):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     else:
-#         return True
-#
-# def hour_available(hour):
-#     t=int(hour)
-#     if t>=0 and t<=23:
-#         return True
-#     else:
-#         flash("请输入正确的小时！",category="error")
-#         return False
 
 
 def struct_timing(year, month, day, hour):
@@ -289,13 +269,11 @@ def materials_apply():
     elif request.method == 'POST':
         #格式控制
         if form_legitimate(request.form):
-            applying_material(request.form)
-            # NOTE: should not exceed 79 chars (per line)
-            printLog("user {} apply for material: {}, submitting time: {}\n".format(
-                request.form['name'], request.form['material'],
-                strftime("%Y-%m-%d %H:%M:%S", localtime()) )
-            )
-            flash("表格提交成功", category='success')
+            if applying_material(request.form):
+                # NOTE: should not exceed 79 chars (per line)
+                printLog("user {} apply for material: {}\n".format(
+                    request.form['name'], request.form['material']))
+                flash("表格提交成功, 请检查相应邮箱（含垃圾箱）。", category='success')
             return redirect(url_for('personal'))
         else:
             return render_template('materials_apply.html')
@@ -321,7 +299,7 @@ def scrutiny():
 @login_verify
 def approve_mat(id):
     record_scrutiny_results('material', id, 1, session['id'])
-    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    printLog("administer {} approved the application for borrowing material.\n application NO: {}\n".format(session['id'],id))
     flash("审批借出物资成功", category='success')
     return redirect(url_for('scrutiny'))
 
@@ -329,7 +307,7 @@ def approve_mat(id):
 @login_verify
 def refuse_mat(id):
     record_scrutiny_results('material', id, 2, session['id'])
-    printLog("administer {} refused the application for borrowing material.\n application NO: {}, approving time: {}\n ".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    printLog("administer {} refused the application for borrowing material.application NO: {}\n".format(session['id'], id))
     flash("物资借出申请已拒绝", category='info')
     return redirect(url_for('scrutiny'))
 
