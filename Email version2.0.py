@@ -8,7 +8,7 @@ from email.mime.multipart import MIMEMultipart
 from email.header import Header
 
 sender = '1457372615@qq.com' #发件人邮箱账号
-passWord = 'fjobxupauuwfighf'   #发件人邮箱授权码
+passWord = None  #发件人邮箱授权码
 receivers = ['1516274933@qq.com']   #发件人的邮箱账号
 '''
 此处有个问题:receivers必须主动开启smtp/pop服务，所以可能需要在主页上进行说明
