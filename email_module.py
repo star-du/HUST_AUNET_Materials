@@ -28,7 +28,7 @@ def mail(content,receivers):
         for i in range(len(receivers)):
             to = receivers[i]
             msg['To'] = to
-            s.sendmail(email_sender,to,msg.as_string())
+            s.sendmail(email_sender, to, msg.as_string())
             print("success")
         s.quit()
     except smtplib.SMTPException:
