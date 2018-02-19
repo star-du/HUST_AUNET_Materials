@@ -11,7 +11,7 @@ from functools import wraps
 from email_module import mail
 
 from glob_var import *
-import sqlite3, re#正则
+import sqlite3, os, re#正则
 
 
 
@@ -38,10 +38,10 @@ def verify(id,passwd):
 
 def printLog(log):
     ''' Use to write log for user's behaviour '''
-    with open("log.txt",encoding="utf-8", mode='a') as f:
+    with open(LOG, encoding="utf-8", mode='a') as f:
         f.write(log)
         f.write("operation time: {}\n".format(strftime("%Y-%m-%d %H:%M:%S", localtime())))
-        print("ADD log")
+        print("ADD TO LOG")
 
 def applying_material(form):
     ''' Use to dump the applying information into the database, using the request.form as argument.

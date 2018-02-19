@@ -79,3 +79,6 @@ administer 村下没有树 approved the application for borrowing material.
 
 user 陈独秀 apply for material: 新青年 1本, submitting time: 2018-02-13 16:16:17
 
+administer 村下没有树 approved the application for borrowing material.
+ application NO: 30
+operation time: 2018-02-19 21:40:16
