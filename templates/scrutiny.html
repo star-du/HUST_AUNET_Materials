@@ -20,6 +20,7 @@
 <!--form-->
 
 <ul class="collapsible" data-collapsible="accordion">
+  {% if 'id' in session %}
   <li>
     <div class="collapsible-header">
       <i class="material-icons">local_activity</i>
@@ -34,13 +35,22 @@
   </div>
     </div>
   </li>
+  {% elif 'id2' in session %}
   <li>
     <div class="collapsible-header">
       <i class="material-icons">domain</i>
       教室借用申请
-      <span class="badge">0</span></div>
-    <div class="collapsible-body white"><p>Lorem ipsum dolor sit amet.</p></div>
+    <span class="new badge blue">{{ num }}</span></div>
+      <div class="collapsible-body white">
+          <div class="collection card-panel">
+
+              {% for i in range(0, num)  %}
+              <a href="#classroom_{{ id_list[i] }}" class="collection-item dismissable"> <b> {{ msgs[i][1] }}  {{ msgs[i][2] }} </b> 借用 <i>{{ msgs[i][3] }}</i> 的申请</a>
+              {% endfor %}
+        </div>
+          </div>
   </li>
+  {% endif %}
 </ul>
 
 
@@ -110,7 +120,50 @@
 </div>
 {% endfor %}
 
+<!-- modal window for classroom_scrutiny -->
+{% for i in range(0,num)  %}
+<div id="classroom_{{id_list[i]}}" class="modal modal-fixed-footer">
+<div class="modal-content">
+<!-- <h4 class="center">{{i}}</h4>
+<div class="divider"></div> -->
+<div class="card">
+      <span class="card-title">  {{ msgs[i][1] }} {{ msgs[i][2] }}借用教室申请</span>
+      <div class="card-content">
+      	<div class="row">
+      		<table class="striped col s12">
+      			<tr>
+      				<th>教室：</th><td> {{ msgs[i][3] }} </td>
+      			</tr>
+      			<tr>
+      				<th>借用时间：</th><td> {{ msgs[i][5] }}年 {{ msgs[i][6] }}月{{ msgs[i][7] }}日  {{ msgs[i][8] }}时 </td>
+      			</tr>
+      			<tr>
+      				<th>预计归还时间：</th><td> {{ msgs[i][9] }}年 {{ msgs[i][10] }}月{{ msgs[i][11] }}日  {{ msgs[i][12] }}时 </td>
+      			</tr>
+      			<tr>
+      				<th>申请人联系方式：</th><td> {{ msgs[i][4] }} </td>
+      			</tr>
+      		</table>
+      	</div>
+      </div>
+      </div>
+</div> <!-- end division for modal-content -->
 
+<div class="modal-footer">
+  <form action="{{url_for('approve_class', id = id_list[i])}}" method="post">
+    <button class="btn col s3 waves-effect waves-light right" type="submit" >同意借用
+      <i class="material-icons right">check_circle</i>
+    </button>
+  </form>
+  <form action="{{url_for('refuse_class', id = id_list[i])}}" method="post">
+    <button class="btn col s3  orange darken-4 waves-effect waves-light right" type="submit" style="margin-right:0.5em">否决申请
+      <i class="material-icons right">event_busy</i>
+    </button>
+  </form>
+
+</div>
+</div>
+{% endfor %}
 
 
 <script>

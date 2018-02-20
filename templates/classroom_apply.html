@@ -12,10 +12,10 @@
     <div class="col s10 offset-s1">
   <div class="card-panel">
   <div class="row">
-    <form class="col s12 m8 offset-m2 l8 offset-l2" action="{{ url_for('materials_apply') }}" method="post">
-      <h5 class="center"><i class="material-icons">perm_identity</i>物资申请</h5>
+    <form class="col s12 m8 offset-m2 l8 offset-l2" action="{{ url_for('classroom_apply') }}" method="post">
+      <h5 class="center"><i class="material-icons">perm_identity</i>教室借用申请</h5>
       <div class="progress col s12 ">
-        <div class="determinate lime" style="width:100%"></div>
+        <div class="determinate pink" style="width:100%"></div>
       </div>
 
       <div class="input-field col s12">
@@ -23,8 +23,8 @@
         <label for="name">姓名</label>
       </div>
       <div class="input-field col s12">
-        <input name="material" type="text" class="validate" required>
-        <label for="material">所借物品名称/编号</label>
+        <input name="classroom" type="text" class="validate" required>
+        <label for="classroom">所借教室</label>
       </div>
       <div class="input-field col s12">
         <input name="contact" class="validate" type="email" required>
@@ -54,7 +54,7 @@
       </div>
 
       <div class="progress col s10 offset-s1 ">
-        <div class="determinate lime" style="width:100%"></div>
+        <div class="determinate pink" style="width:100%"></div>
       </div>
       <div class="input-field col s12">
         <input name="startyear" type="text" class="validate" required min="2018">

@@ -2,14 +2,9 @@
 {% block content %}
 
 <div class="container">
+  <div class="card-panel" style="margin-top:3%;">
 <h4 class="center">申请记录</h4>
-<div class="card-tabs">
-  <ul class="tabs tabs-fixed-width center">
-          <li class="tab"><a class="active" href="#materials">物资申请</a></li>
-          <li class="tab"><a href="#classroom">教室申请</a></li>
-        </ul>
 
-<div class="card-panel" style="margin-top:0;" id="materials">
 {% for i in range(0,num)  %} <!-- records of materials -->
 <div class="container">
 <div class="row">
@@ -18,9 +13,9 @@
         {% if msgs[i][13] == 0 %}
         <i class="material-icons right small"></i>
         {% elif msgs[i][13] == 1 %}
-         <i class="material-icons  right small">check_circle</i>
+         <i class="material-icons  right small green-text">check_circle</i>
         {% elif msgs[i][13] == 2 %}
-        <i class="material-icons right small">event_busy</i>
+        <i class="material-icons right small red-text">event_busy</i>
         {% endif %}  </div>
       <div class="card-content">
       	<div class="row">
@@ -32,7 +27,7 @@
             </tr>
 
             <tr>
-      				<th>物资：</th><td> {{ msgs[i][3] }} </td>
+      				<th>申请项目：</th><td> {{ msgs[i][3] }} </td>
               <th>申请人联系方式：</th><td> {{ msgs[i][4] }} </td>
       			</tr>
 
@@ -65,17 +60,16 @@
 </div>
 {% endfor %}
 <!-- TODO:真正实现分页 -->
- <ul class="pagination">
+ <!-- <ul class="pagination">
    <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
    <li class="active"><a href="#!">1</a></li>
    <li class="waves-effect"><a href="#!">2</a></li>
     <li class="waves-effect"><a href="#!">3</a></li>
    <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
-  </ul>
+  </ul> -->
 </div>
 
-<div class="card-panel" style="margin-top:0;" id="classroom">
-</div>
+
 
 </div>
 <script>
