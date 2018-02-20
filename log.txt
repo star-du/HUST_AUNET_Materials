@@ -121,3 +121,10 @@ operation time: 2018-02-20 17:27:46
 user 新华网 apply for classroom: 36号楼
 operation time: 2018-02-20 17:28:39
 
+user 薄冰 apply for classroom: 大活1-6楼
+operation time: 2018-02-20 17:38:40
+
+administer class approved the application for borrowing classroom.
+ application NO: 5
+operation time: 2018-02-20 18:14:31
+

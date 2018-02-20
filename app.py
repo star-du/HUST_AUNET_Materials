@@ -66,10 +66,11 @@ def applying_material(form):
             # 如果出现数据无法添加到数据库（可能由于检查合理性时未检查出的错误）
             return False
         else:
-            # result = mail(hint, [form['contact']])
-            # if not result: # 如果邮件发送出现问题
-            #     flash("邮件发送失败，请联系技术人员。", category="error")
-            #     return False
+            if email_enable:
+                result = mail(hint, [form['contact']])
+                if not result: # 如果邮件发送出现问题
+                    flash("邮件发送失败，请联系技术人员。", category="error")
+                    return False
             return True
 
 
@@ -94,10 +95,11 @@ def applying_classroom(form):
             # 如果出现数据无法添加到数据库（可能由于检查合理性时未检查出的错误）
             return False
         else:
-            # result = mail(hint, [form['contact']])
-            # if not result: # 如果邮件发送出现问题
-            #     flash("邮件发送失败，请联系技术人员。", category="error")
-            #     return False
+            if email_enable:
+                result = mail(hint, [form['contact']])
+                if not result: # 如果邮件发送出现问题
+                    flash("邮件发送失败，请联系技术人员。", category="error")
+                    return False
             return True
 
 
@@ -133,9 +135,10 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
             feedback = "社联小伙伴{}，你好！\n你提交的借用{}的申请已批准。\n借出时间：{}年{}月{}日 {}时,请在{}年{}月{}日 {}时之前归还。 \n本邮件为自动发出，请勿回复。\n".format(info[2], info[3],info[5],info[6],info[7],info[8],info[9],info[10],info[11],info[12])
         elif status_code == 2:
             feedback = "社联小伙伴{}，你好！\n很遗憾，你借用{}的申请未能通过！\n本邮件为自动发出，请勿回复。\n".format(info[2], info[3])
-        # result = mail(feedback, [info[4]])
-        # if not result: # 如果邮件发送出现问题
-        #     flash("邮件发送失败，请联系技术人员。", category="error")
+        if email_enable:
+            result = mail(feedback, [info[4]])
+            if not result: # 如果邮件发送出现问题
+                flash("邮件发送失败，请联系技术人员。", category="error")
 
 
 def expire_date():
@@ -341,6 +344,15 @@ def classroom_apply():
         else:
             return render_template('classroom_apply.html')
 
+
+@app.route('/classroom-usage/')
+def classroom_usage():
+    if request.method == 'GET':
+        msgs = get_new_apply('CLASSROOM', 1)
+        id_list = [ i[0] for i in msgs ]
+        num = len(id_list)
+        return render_template('classroom_usage.html', msgs=msgs,
+                               num=num, id_list=id_list)
 
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
 # @login_verify # to make sure non-administer can not access this page
