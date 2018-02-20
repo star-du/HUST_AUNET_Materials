@@ -43,10 +43,12 @@
                   <div class="nav-wrapper teal">
                     <img src="{{ url_for('static', filename='img/unique_weizai.png') }}" style="width:64px; height:64px; margin: auto;" alt="AU-web">
 										<!-- 将img从brand-logo中分离，避免文字过大，下沉 -->
-										<a href="{{ url_for('personal') }}" class="brand-logo" title="点击返回主页面" style="vertical-align:central;padding:0px;font-family:DengXian">华中大学生社团联合会 <span style="font-size:smaller;font-style:italic;">物资管理系统</span></a>
+										<a href="{{ url_for('personal') }}" class="brand-logo hide-on-med-and-down center" title="点击返回主页面" style="vertical-align:central;padding:0px;font-family:DengXian">华中大学生社团联合会 <span style="font-size:smaller;font-style:italic;">物资管理系统</span></a>
+
+										<a href="{{ url_for('personal') }}" class="brand-logo hide-on-large-only" title="点击返回主页面" style="vertical-align:central;padding:0px;font-family:Cambria">HUST AU  <span style="font-size:smaller;">管理系统</span></a>
 
                       <!-- 以下if语句中内容 处理已登陆的管理员账号 -->
-                      {% if 'id' in session %}
+                      {% if 'id' in session or 'id2' in session %}
                           <!-- for desktop -->
                             <ul id="logout-m" class="dropdown-content">
                                 <li><a href="#!">手滑了....</a></li>
@@ -61,9 +63,15 @@
 
             <!-- for desktop -->
                            <ul class="right hide-on-med-and-down">
-                <li>
+								{% if 'id' in session %}
+								<li>
                     <a class="dropdown-button">{{ session['id'] }}</a>
                 </li>
+								{% elif 'id2' in session %}
+								<li>
+										<a class="dropdown-button">{{ session['id2'] }}</a>
+								</li>
+								{% endif %}
                 <li>
                     <a class="dropdown-button" href="#!" data-activates="logout-l" title="注销登录">登出</a>
                 </li>

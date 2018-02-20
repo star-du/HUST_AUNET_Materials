@@ -4,13 +4,17 @@
 #联系人信息{
 	text-align: right;
 }
+
 </style>
 <div class="container">
 	<div class="row">
 
     {% if 'id' in session %}
 		<h4 class="col s12">你好, {{ session["id"] }}!</h4>
-    {% endif %}
+		{% elif 'id2' in session %}
+		<h4 class="col s12">你好, {{ session["id2"] }}!</h4>
+		{% endif %}
+
 
 <ul class="collapsible popout col s12" data-collapsible="accordion">
   <li>
@@ -24,16 +28,17 @@
   </li>
   <li>
     <div class="collapsible-header"><i class="material-icons">schedule</i>教室借用</div>
-<!--
-    <div class="collapsible-body" style="padding:0">
-      <div class="collection">
-        <a href="#" class="collection-item"><i class="material-icons left">alarm_on</i></a>
-        <a href="#" class="collection-item"><i class="material-icons left">search</i></a>
-      </div>
-    </div>-->
+		<div class="collapsible-body" style="padding:0">
+			<div class="collection">
+				<a href="#classroom_notice" class="collection-item"><i class="material-icons left">event</i>申请规则公告</a>
+				<a href="{{ url_for('classroom_usage') }}" class="collection-item"><i class="material-icons left">announcement</i>借阅情况公示</a>
+				<a href="{{ url_for('classroom_apply') }}" class="collection-item"><i class="material-icons left">file_upload</i>提交借用申请</a>
+			</div>
+		</div>
+
   </li>
   <!-- 后台管理仅已登陆的管理员可以进入 -->
-  {% if 'id' in session %}
+  {% if 'id' in session or 'id2' in session %}
   <li>
     <div class="collapsible-header"><i class="material-icons">supervisor_account</i>管理后台</div>
     <div class="collapsible-body" style="padding:0">
@@ -72,50 +77,21 @@
   </div>
 </div>
 
-<!-- 弹出：评分表 (资源可以利用 暂时保留)
-<div id="score" class="modal modal-fixed-footer">
+
+<div id="classroom_notice" class="modal modal-fixed-footer">
 <div class="modal-content">
-<h5 class="center">创建评分</h5>
+<h4 class="center">教室借用规章制度</h4>
 <div class="divider"></div>
-<form method="post">
-  <div class="row">
-    <select name="depart" class="col s10 offset-s1" required>
-      <option value="" disabled selected>部门</option>
-      <option value="财务部" id="fun">财务部</option>
-      <option value="秘书部" id="sec">秘书部</option>
-      <option value="人力资源部" id="hr">人力资源部</option>
-      <option value="社团部" id="clb">社团部</option>
-      <option value="行政监察部" id="sup">行政监察部</option>
-      <option value="外联部" id="out">外联部</option>
-      <option value="公共关系部" id="pr">公共关系部</option>
-      <option value="宣传部" id="pub">宣传部</option>
-      <option value="媒体部" id="med">媒体部</option>
-      <option value="思存工作室" id="sicun">思存工作室</option>
-      <option value="新媒体工作室" id="nmed">新媒体工作室</option>
-      <option value="社团外联企划小组" id="cop">社团外联企划小组</option>
-      <option value="文艺拓展部" id="ext">文艺拓展部</option>
-      <option value="其它" id="o">其它</option>
-    </select>
+<p>CONTENTS HERE.</p>
+
+
+  <a href="{{ url_for('materials_apply') }}"><button type="submit" class="btn col s4 waves-effect waves-light right">开始填表吧<i class="material-icons right">open_in_new</i></button></a>
   </div>
-  <div class="row">
-    <div class="input-field col s6 left">
-      <input type="text" name="title" class="validate" required>
-      <label for="title">标题</label>
-    </div>
-    <div class="input-field col s6 right">
-      <input name="date" type="date" class="datepicker" required>
-      <label for="date">考评时间</label>
-    </div>
-  </div>
-  <button type="submit" class="btn col s4 waves-effect waves-light right">创建表格<i class="material-icons right">open_in_new</i></button>
-</form>
-</div>
 <div class="modal-footer">
-<!-\-a class="modal-action waves-effect waves-dark btn-flat light-green-text text-darken-4" type="submit">开始评分<i class="material-icons right">open_in_new</i></a-\->
-<a href="#!" class="modal-action modal-close waves-effect waves-dark btn-flat ">取消</a>
+<a href="#!" class="modal-action modal-close waves-effect waves-dark btn-flat ">关闭公告</a>
+  </div>
 </div>
-</div>
--->
+
 
 <script>
 /**

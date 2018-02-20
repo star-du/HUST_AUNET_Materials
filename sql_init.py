@@ -13,6 +13,16 @@ ini_accounts =[('admin','au'), ('1','aaa'), ('I_AM_BOSS','showmethemoney'),('村
 c.executemany('INSERT INTO ADMIN VALUES (?,?)', ini_accounts)
 print ("admin accounts initialized successfully")
 
+c.execute('''CREATE TABLE ADMIN2
+       (ID  TEXT(10)    PRIMARY KEY     NOT NULL,
+       PASSWORD           TEXT(30)    NOT NULL); ''')
+print ("Table admin created successfully")
+ini_accounts =[('sudo','pass'), ('class','qwert')]
+c.executemany('INSERT INTO ADMIN2 VALUES (?,?)', ini_accounts)
+print ("admin accounts initialized successfully")
+# used to store accounts of adminster overseeing classroom_apply
+
+
 c.execute('''CREATE TABLE MATERIAL
        (ID  INTEGER    PRIMARY KEY     AUTOINCREMENT,
        DEP     TEXT    NOT NULL,
@@ -35,6 +45,25 @@ print ("Table material created successfully")
 # START- 与 END- 开头的各项为借出与归还的时间
 # status 用0表示未处理，1表示审批未通过， 2表示审批通过
 # ADMIN 如经过审批，将审批的管理员id记录
+
+c.execute('''CREATE TABLE CLASSROOM
+       (ID  INTEGER    PRIMARY KEY     AUTOINCREMENT,
+       DEP     TEXT    NOT NULL,
+       NAME    TEXT    NOT NULL,
+       CLASSROOM TEXT   NOT NULL,
+       CONTACT TEXT    NOT NULL,
+       STARTYEAR   INT    NOT NULL,
+       STARTMONTH   INT    NOT NULL,
+       STARTDAY   INT    NOT NULL,
+       STARTHOUR   INT    NOT NULL,
+       ENDINGYEAR  TEXT    NOT NULL,
+       ENDINGMONTH  TEXT    NOT NULL,
+       ENDINGDAY  TEXT    NOT NULL,
+       ENDINGHOUR  TEXT    NOT NULL,
+       STATUS  INTEGER NOT NULL,
+       ADMIN   TEXT ); ''')
+print ("Table classroom created successfully")
+# 与material类似，仅将material项替换为CLASSROOM
 
 conn.commit()
 

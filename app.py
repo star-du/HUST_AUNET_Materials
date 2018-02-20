@@ -8,21 +8,23 @@ from flask import make_response, flash, jsonify, send_from_directory
 from time import localtime, strftime, strptime
 from datetime import date, timedelta
 from functools import wraps
-import sqlite3, os ,re#正则
+from email_module import mail
+
+from glob_var import *
+import sqlite3, os, re#正则
 
 
-######## global configuration ########
-SYSTEM_ROOT = os.path.split(os.path.realpath(__file__))[0]
-DATABASE = os.path.join(SYSTEM_ROOT, 'data.db')
+
+
 ######## initializaton ########
 
 app = Flask(__name__)
 app.secret_key = 's\x1f}\xc8\xe29c\x84\xd1\x87P\x8e\xa5h5s\xf1\xfff\xcf\xfcK\xe8i'
 
 ######## user utils ########
-def verify(id,passwd):
+def verify(id, passwd, admin_type):
     with sqlite3.connect(DATABASE) as database:
-        cursor = database.execute("SELECT PASSWORD FROM ADMIN WHERE ID = ? ", (id,))
+        cursor = database.execute("SELECT PASSWORD FROM %s WHERE ID = ? "%admin_type, (id,))
         correct = cursor.fetchone()
         if correct == None:  # wrong id
             flash("用户名不存在！", category="error")
@@ -36,11 +38,15 @@ def verify(id,passwd):
 
 def printLog(log):
     ''' Use to write log for user's behaviour '''
-    with open("log.txt",encoding="utf-8", mode='a') as f:
-        f.write(log+"\n")
+    with open(LOG, encoding="utf-8", mode='a') as f:
+        f.write(log)
+        f.write("operation time: {}\n\n".format(strftime("%Y-%m-%d %H:%M:%S", localtime())))
+        print("ADD TO LOG")
 
 def applying_material(form):
-    ''' Use to dump the applying information into the database, using the request.form as argument '''
+    ''' Use to dump the applying information into the database, using the request.form as argument.
+
+    Return True, if the form is successfully added to database and the email is sent. Else, False is returned.'''
     mat_form = [
         (
             form['dep'], form['name'], form['material'], form['contact'],
@@ -51,16 +57,51 @@ def applying_material(form):
     ]
     with sqlite3.connect(DATABASE) as database:
         c = database.cursor()
-        c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
-        # I note that the first null value is _needed_ for the index (the integer-based prime key) to AUTOINCREMENT, and it seems to be the so called 'ROWID' column
-        # maybe should check : https://stackoverflow.com/questions/7905859/is-there-an-auto-increment-in-sqlite
-        # ANSWER: you can specify witch field to fill with the syntax:
-        #     INSERT INTO MATERIAL (
-        #         HEADERS, OTHER_HEADERS, ...
-        #     )
-        #     VALUES (...);
-        # leaving the ID field
-        database.commit()
+        try:
+            c.executemany('INSERT INTO MATERIAL VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
+            database.commit()
+            hint = "社联小伙伴{}，你好！\n你已成功提交物资借出申请，请勿重复提交!\n本邮件为自动发出，请勿回复。\n".format(form['name'])
+        except:
+            flash("申请提交失败，请重试或联系技术人员。", category="error")
+            # 如果出现数据无法添加到数据库（可能由于检查合理性时未检查出的错误）
+            return False
+        else:
+            if email_enable:
+                result = mail(hint, [form['contact']])
+                if not result: # 如果邮件发送出现问题
+                    flash("邮件发送失败，请联系技术人员。", category="error")
+                    return False
+            return True
+
+
+def applying_classroom(form):
+    '''Very much the same as applying_material, except for it's used to dump data into table CLASSROOM'''
+    mat_form = [
+        (
+            form['dep'], form['name'], form['classroom'], form['contact'],
+            form['startyear'], form['startmonth'], form['startday'],
+            form['starthour'], form['endingyear'], form['endingmonth'],
+            form['endingday'], form['endinghour']
+        )
+    ]
+    with sqlite3.connect(DATABASE) as database:
+        c = database.cursor()
+        try:
+            c.executemany('INSERT INTO CLASSROOM VALUES (NULL,?, ?, ?, ?, ?, ?, ?, ? ,?, ?, ?, ?, 0, NULL)', mat_form)
+            database.commit()
+            hint = "社联小伙伴{}，你好！\n你已成功提交教室借出申请，请勿重复提交!\n本邮件为自动发出，请勿回复。\n".format(form['name'])
+        except:
+            flash("申请提交失败，请重试或联系技术人员。", category="error")
+            # 如果出现数据无法添加到数据库（可能由于检查合理性时未检查出的错误）
+            return False
+        else:
+            if email_enable:
+                result = mail(hint, [form['contact']])
+                if not result: # 如果邮件发送出现问题
+                    flash("邮件发送失败，请联系技术人员。", category="error")
+                    return False
+            return True
+
 
 def get_new_apply(tablename, status_code):
     '''
@@ -86,7 +127,19 @@ def record_scrutiny_results(tablename, indx, status_code, admin):
         c = database.cursor()
         c.execute("update %s set STATUS = ? where ID = ? "%tablename , (status_code, indx)  )
         c.execute("update %s set ADMIN = ? where ID = ? "%tablename , (admin, indx)  )
+        # 提取审批后的记录储存于info中用于发送邮件
+        cursor = c.execute('select * from %s where ID = %d;'% (tablename, indx))
+        info = cursor.fetchall()[0]
         database.commit()
+        if status_code == 1:
+            feedback = "社联小伙伴{}，你好！\n你提交的借用{}的申请已批准。\n借出时间：{}年{}月{}日 {}时,请在{}年{}月{}日 {}时之前归还。 \n本邮件为自动发出，请勿回复。\n".format(info[2], info[3],info[5],info[6],info[7],info[8],info[9],info[10],info[11],info[12])
+        elif status_code == 2:
+            feedback = "社联小伙伴{}，你好！\n很遗憾，你借用{}的申请未能通过！\n本邮件为自动发出，请勿回复。\n".format(info[2], info[3])
+        if email_enable:
+            result = mail(feedback, [info[4]])
+            if not result: # 如果邮件发送出现问题
+                flash("邮件发送失败，请联系技术人员。", category="error")
+
 
 def expire_date():
     a_month = timedelta(days=31)
@@ -140,55 +193,13 @@ def email_available(email): #email: str 格式
 
 #检查姓名格式
 def name_available(name):   # name: str 格式
-    pattern = re.compile(r"[\u4e00-\u9fa5]{2,4}")   # 匹配2到4个汉字
+    pattern = re.compile(r"[\u4e00-\u9fa5]{2,8}")   # 匹配2到8个汉字
     match = pattern.match(name)
     if match:
         return True
     else:
         flash("不是合法的姓名！", category="error")
         return False
-
-
-#检查日期格式
-#original version
-# def year_available(year):
-#     if not isinstance(year, int):
-#         flash("请输入正确的年份！", category="error")
-#         return False
-#     if not year >= 2000:
-#         flash("请输入正确的年份！", category="error")
-#         return False
-#     else:
-#         return True
-#
-#
-# def month_available(month):
-#     if not isinstance(month, int):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     if not month in range(1,13):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     else:
-#         return True
-#
-# def day_available(day):
-#     if not isinstance(month, int):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     if not day in range(1, 31):
-#         flash("请输入正确的月份！", category="error")
-#         return False
-#     else:
-#         return True
-#
-# def hour_available(hour):
-#     t=int(hour)
-#     if t>=0 and t<=23:
-#         return True
-#     else:
-#         flash("请输入正确的小时！",category="error")
-#         return False
 
 
 def struct_timing(year, month, day, hour):
@@ -207,9 +218,11 @@ def struct_timing(year, month, day, hour):
         flash("访问错误！", category="error")
 
 
-def form_legitimate(dic):
-    """Check the legitimacy of the request form."""
-    items_1 = ('name', 'material', 'contact', 'dep')
+def form_legitimate(dic, column):
+    """Check the legitimacy of the request form.
+
+    Column is either 'material' or 'classroom' """
+    items_1 = ('name', 'contact', 'dep', column)
     time_1 = ('startyear', 'startmonth', 'startday', 'starthour')
     time_2 = ('endingyear', 'endingmonth', 'endingday',  'endinghour')
     try:
@@ -248,21 +261,37 @@ def login():
         #检查危险字符
         if check_slashes(request.form['id']) \
                 and check_slashes(request.form['passwd']):
-            session['id'] = request.form['id']
             session['passwd'] = request.form['passwd']
-            if verify(session['id'], session['passwd']):
-                try:
-                    # don't carry your passwd with you
-                    assert session.pop('passwd', None) != None
-                except:
+            if request.form['admin_type'] == 'admin1':
+                session['id'] = request.form['id']
+                if verify(session['id'], session['passwd'], 'ADMIN'):
+                    try:
+                        # don't carry your passwd with you
+                        assert session.pop('passwd', None) != None
+                    except:
+                        session.pop('id', None)
+                        return redirect(url_for('login'))
+                    flash("着陆成功！", category='success')
+                    return redirect(url_for('personal'))
+                else:
                     session.pop('id', None)
+                    session.pop('passwd', None)
                     return redirect(url_for('login'))
-                flash("着陆成功！", category='success')
-                return redirect(url_for('personal'))
-            else:
-                session.pop('id', None)
-                session.pop('passwd', None)
-                return redirect(url_for('login'))
+            elif request.form['admin_type'] == 'admin2':
+                session['id2'] = request.form['id']
+                if verify(session['id2'], session['passwd'], 'ADMIN2'):
+                    try:
+                        # don't carry your passwd with you
+                        assert session.pop('passwd', None) != None
+                    except:
+                        session.pop('id2', None)
+                        return redirect(url_for('login'))
+                    flash("着陆成功！", category='success')
+                    return redirect(url_for('personal'))
+                else:
+                    session.pop('id2', None)
+                    session.pop('passwd', None)
+                    return redirect(url_for('login'))
         else:
             return redirect(url_for('login'))
 
@@ -273,9 +302,12 @@ def personal():
 @app.route('/logout/')
 def logout():
     # 已登陆的管理员才能看到logout按钮，否则报错
-    assert 'id' in session
+    assert 'id' in session or 'id2' in session
+    if 'id' in session:
         # clear session
-    session.pop('id', None) # about the usage of session.pop see: https://stackoverflow.com/questions/20115662/what-does-the-second-argument-of-the-session-pop-method-do-in-python-flask
+        session.pop('id', None) # about the usage of session.pop see: https://stackoverflow.com/questions/20115662/what-does-the-second-argument-of-the-session-pop-method-do-in-python-flask
+    elif 'id2' in session:
+        session.pop('id2', None)
     print(session.pop('passwd', None))  # should get `None`
     flash("已登出", category='message')
     return redirect(url_for('index'))
@@ -288,24 +320,48 @@ def materials_apply():
         return render_template('materials_apply.html')
     elif request.method == 'POST':
         #格式控制
-        if form_legitimate(request.form):
-            applying_material(request.form)
-            # NOTE: should not exceed 79 chars (per line)
-            printLog("user {} apply for material: {}, submitting time: {}\n".format(
-                request.form['name'], request.form['material'],
-                strftime("%Y-%m-%d %H:%M:%S", localtime()) )
-            )
-            flash("表格提交成功", category='success')
+        if form_legitimate(request.form, 'material'):
+            if applying_material(request.form):
+                # NOTE: should not exceed 79 chars (per line)
+                printLog("user {} apply for material: {}\n".format(
+                    request.form['name'], request.form['material']))
+                flash("表格提交成功, 请检查相应邮箱（含垃圾箱）。", category='success')
             return redirect(url_for('personal'))
         else:
             return render_template('materials_apply.html')
 
+@app.route('/classroom/', methods=['GET', 'POST'])
+def classroom_apply():
+    if request.method == 'GET':
+        return render_template('classroom_apply.html')
+    elif request.method == 'POST':
+        if form_legitimate(request.form, 'classroom'):
+            if applying_classroom(request.form):
+                printLog("user {} apply for classroom: {}\n".format(
+                    request.form['name'], request.form['classroom']))
+                flash("表格提交成功, 请检查相应邮箱（含垃圾箱）。", category='success')
+            return redirect(url_for('personal'))
+        else:
+            return render_template('classroom_apply.html')
+
+
+@app.route('/classroom-usage/')
+def classroom_usage():
+    if request.method == 'GET':
+        msgs = get_new_apply('CLASSROOM', 1)
+        id_list = [ i[0] for i in msgs ]
+        num = len(id_list)
+        return render_template('classroom_usage.html', msgs=msgs,
+                               num=num, id_list=id_list)
 
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
-@login_verify # to make sure non-administer can not access this page
+# @login_verify # to make sure non-administer can not access this page
 def scrutiny():
     if request.method == 'GET':
-        msgs = get_new_apply('MATERIAL', 0)
+        if 'id' in session:
+            msgs = get_new_apply('MATERIAL', 0)
+        elif 'id2' in session:
+            msgs = get_new_apply('CLASSROOM', 0)
         id_list = [ i[0] for i in msgs ]
         num = len(id_list)
         return render_template('scrutiny.html', msgs=msgs,
@@ -318,25 +374,45 @@ def scrutiny():
 
 
 @app.route('/approve_mat/<int:id>', methods=['POST'])
-@login_verify
+# @login_verify
 def approve_mat(id):
     record_scrutiny_results('material', id, 1, session['id'])
-    printLog("administer {} approved the application for borrowing material.\n application NO: {}, approving time: {}\n".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    printLog("administer {} approved the application for borrowing material.\n application NO: {}\n".format(session['id'],id))
     flash("审批借出物资成功", category='success')
     return redirect(url_for('scrutiny'))
 
 @app.route('/refuse_mat/<int:id>', methods=['POST'])
-@login_verify
+# @login_verify
 def refuse_mat(id):
     record_scrutiny_results('material', id, 2, session['id'])
-    printLog("administer {} refused the application for borrowing material.\n application NO: {}, approving time: {}\n ".format(session['id'],id, strftime("%Y-%m-%d %H:%M:%S", localtime())))
+    printLog("administer {} refused the application for borrowing material.\n application NO: {}\n".format(session['id'], id))
     flash("物资借出申请已拒绝", category='info')
     return redirect(url_for('scrutiny'))
 
+@app.route('/approve_class/<int:id>', methods=['POST'])
+# @login_verify
+def approve_class(id):
+    record_scrutiny_results('classroom', id, 1, session['id2'])
+    printLog("administer {} approved the application for borrowing classroom.\n application NO: {}\n".format(session['id2'],id))
+    flash("审批借出教室成功", category='success')
+    return redirect(url_for('scrutiny'))
+
+@app.route('/refuse_class/<int:id>', methods=['POST'])
+# @login_verify
+def refuse_class(id):
+    record_scrutiny_results('classroom', id, 2, session['id2'])
+    printLog("administer {} refused the application for borrowing classroom.\n application NO: {}\n".format(session['id2'], id))
+    flash("教室借出申请已拒绝", category='info')
+    return redirect(url_for('scrutiny'))
+
 @app.route('/records/')
-@login_verify
+# @login_verify
 def records():
-    results = get_records('material',expire_date().year, expire_date().month)
+    if 'id' in session:
+        tablename = 'material'
+    elif 'id2' in session:
+        tablename = 'classroom'
+    results = get_records(tablename, expire_date().year, expire_date().month)
     num = len(results)
     return render_template('records.html', msgs = results, num = num)
 

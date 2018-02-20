@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+  <div class="card-panel" style="margin-top:1em;">
+<h4 class="center">借出情况公示</h4>
+
+<!-- records of material-usage -->
+<div class="container">
+<div class="row">
+      <div class="card-content">
+      	<div class="row">
+      		<table class="bordered centered highlight col s12">
+<thead>
+            <tr>
+              <th>教室</th>
+              <th>借用时间</th>
+              <th>预计归还时间</th>
+            </tr>
+          </thead>
+<tbody>
+{% for i in range(0,num)  %}
+            <tr>
+      				<td> {{ msgs[i][3] }} </td>
+      				<td> {{ msgs[i][5] }}年 {{ msgs[i][6] }}月{{ msgs[i][7] }}日  {{ msgs[i][8] }}时 </td>
+      				<td> {{ msgs[i][9] }}年 {{ msgs[i][10] }}月{{ msgs[i][11] }}日  {{ msgs[i][12] }}时 </td>
+      			</tr>
+{% endfor %}
+</tbody>
+      		</table>
+      	</div>
+                <a href="{{ url_for('index') }}" class="collection-item right"><i class="material-icons ">fast_rewind</i>返回主页面</a>
+      </div>
+      </div>
+
+
+</div>
+</div>
+
+<!-- TODO:真正实现分页 -->
+ <!-- <ul class="pagination">
+   <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+   <li class="active"><a href="#!">1</a></li>
+   <li class="waves-effect"><a href="#!">2</a></li>
+    <li class="waves-effect"><a href="#!">3</a></li>
+   <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+  </ul> -->
+</div>
+
+
+
+</div>
+<script>
+/**
+* Materialize Controller code
+*/
+$(document).ready(function(){
+$('.collapsible').collapsible();
+$('.modal').modal();
+$('select').material_select();
+// $('.modal').modal({
+//   dismissible: true, // Modal can be dismissed by clicking outside of the modal
+//   opacity: .5, // Opacity of modal background
+//   in_duration: 300, // Transition in duration
+//   out_duration: 200, // Transition out duration
+//   starting_top: '4%', // Starting top style attribute
+//   ending_top: '10%', // Ending top style attribute
+//   ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+//     console.log(modal, trigger);
+//   },
+//   complete: function() {} // Callback for Modal close
+// });
+});
+</script>
+
+{% endblock %}
