@@ -439,6 +439,10 @@ def records():
 def opensource_info():
     return render_template("opensource-info.html")
 
+@app.route('/help/')
+def help():
+    return render_template("help.html")
+
 ######## run ########
 
 if __name__ == '__main__':

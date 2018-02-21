@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %} 开源说明 {% endblock %}
+{% block content %}
+<style>
+p {
+  font-size: 1.2em;
+  text-indent: 40px;
+}
+h5 {
+  color: #5c6bc0;
+}
+.link_out {
+  outline: none;
+  text-decoration: none;
+  padding: 2px 1px 0;
+}
+
+.link_out:link {
+  color: #265301;
+}
+
+.link_out:visited {
+  color: #437A16;
+}
+
+.link_out:focus {
+  border-bottom: 1px solid;
+  background: #BAE498;
+}
+
+.link_out:hover {
+  border-bottom: 1px solid;
+  background: #CDFEAA;
+}
+
+.link_out:active {
+  background: #265301;
+  color: #CDFEAA;
+} */
+</style>
+
+    <div class="container ">
+      <div class="card-panel">
+        <div class="row">
+            <div class="col s10 offset-s1">
+                <h4 class="center">FAQ/常见问题解答</h4>
+                <div class="card-content">
+                <h5>1.邮箱为什么要开启SMTP/POP3才能收到通知邮件？</h5>
+              <blockquote>
+              POP3是Post Office Protocol 3的简称，即邮局协议的第3个版本,它规定怎样将个人计算机连接到Internet的邮件服务器和下载电子邮件的电子协议。<br>
+              SMTP 的全称是“Simple Mail Transfer Protocol”，即简单邮件传输协议。它是一组用于从源地址到目的地址传输邮件的规范，通过它来控制邮件的中转方式。
+              </blockquote>
+                <p class="">简单地说，SMTP管‘发’， POP3/IMAP管‘收’。</p><p>
+                由于我们的邮件是使用SMTP发送（使用SSL协议），所以需要开启相应的POP3服务才能正常收到邮件。</p>
+                <h5>2.我需要手动开启SMTP/POP3吗？</h5>
+                <p>推荐使用的华科教育网邮箱是已开启POP服务的，因此一般无需手动开启，可直接在微信‘华中大微校园’的电子邮箱应用中查看。</p>
+                <p>网易邮箱已经默认开启POP3/SMTP/IMAP服务。QQ邮箱和Gmail邮箱内的「POP3/SMTP服务」则一般都是默认关闭的，需要手动开启。在开启QQ邮箱的POP3/SMTP服务前，需设置独立密码，具体步骤可以参考<a href="https://jingyan.baidu.com/article/fedf0737af2b4035ac8977ea.html" target="_blank" class="link_out" >此则百度经验</a>。有关outlook邮箱的相关配置，可以查阅<a href="https://support.office.com/en-us/article/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040?ui=en-US&rs=en-US&ad=US" target="_blank" class="link_out" >官方支持文档（英文）</a>。</p>
+
+                <h5>3.如果没有收到邮件怎么办？</h5>
+                <p>如果收到系统的邮件发送提醒，邮件一般会在较快时间内到达你留下的邮箱地址。由于不同邮箱的反垃圾邮件机制，邮件可能会被自动判为垃圾邮件，未收到信息时可以检查垃圾箱/spam。由于我们的管理员都<del>沉迷学习</del>工作繁忙，审批时间可能会略长于预计，请各位社联小伙伴稍微耐心些。当然，也可以在<a class="link_out" href="{{ url_for('personal_search') }}">申请结果查询</a>栏目中随时check你的申请状态和相关的审批结果哦。</p>
+              </div>
+            </div>
+        </div>
+ </div>
+</div>
+
+{% endblock %}

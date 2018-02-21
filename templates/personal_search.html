@@ -20,7 +20,7 @@
 </style>
 <div class="container row">
     <div class="col s12">
-  <div class="card blue lighten-2">
+  <div class="card" style="margin-bottom:0;">
     <div class="card-content black-text">
       <span class="card-title center" style=""><b>申请结果查询</b></span>
     </div>
@@ -62,7 +62,7 @@
     </div>
   </div>
 
-<div class=" card-panel" style="margin-top:0.5em;">
+<div class=" card-panel" style="margin-top:0;">
   {% if hint %}
   <div class="row">
     <div class="card right col s5 ">
@@ -81,11 +81,11 @@
 
   {% else %} <!-- when searching something, results show here -->
         <ul class="tabs" >
-          <li class="tab col s3"><a class="active" href="#mat_result">物资
+          <li class="tab col s2 m2 l3"><a class="active" href="#mat_result">物资
             <div class="chip right">
     {{ num_mat }}
   </div></a></li>
-          <li class="tab col s3"><a href="#class_result">教室
+          <li class="tab col s2 m2 l3"><a href="#class_result">教室
             <div class="chip right">
     {{ num_class }}
   </div></a></li>
