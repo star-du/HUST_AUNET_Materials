@@ -134,3 +134,15 @@ operation time: 2018-02-21 12:08:58
 user 我是谁 apply for classroom: 大活611
 operation time: 2018-02-21 15:58:49
 
+administer 村下没有树 approved the application for borrowing material.
+ application NO: 35
+operation time: 2018-02-21 17:39:25
+
+administer sudo approved the application for borrowing classroom.
+ application NO: 7
+operation time: 2018-02-21 17:58:30
+
+administer sudo approved the application for borrowing classroom.
+ application NO: 4
+operation time: 2018-02-21 18:59:51
+

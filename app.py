@@ -348,11 +348,17 @@ def classroom_apply():
 @app.route('/classroom-usage/')
 def classroom_usage():
     if request.method == 'GET':
-        msgs = get_new_apply('CLASSROOM', 1)
-        id_list = [ i[0] for i in msgs ]
-        num = len(id_list)
+        results = get_records('classroom', date.today().year, date.today().year) # search for unfinished records
+        msgs = [i for i in results if i[13] == 1] # search for approved records only
+        def get_endtime(record):
+            return struct_timing(record[9], record[10], record[11], record[12])
+        # for j in msgs:
+        #     print(get_endtime(j))
+        sorted(msgs, key=get_endtime) #TODO:why it doesn't work??
+        # print(msgs)
+        num = len(msgs)
         return render_template('classroom_usage.html', msgs=msgs,
-                               num=num, id_list=id_list)
+                               num=num)
 
 @app.route('/personal_search/', methods=['GET', 'POST'])
 def personal_search():
