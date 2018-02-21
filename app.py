@@ -161,7 +161,7 @@ def login_verify(to_be_decorated):
     '''  check-in decorator  '''
     @wraps(to_be_decorated)
     def decorated(*args, **kwargs):
-        if 'id' not in session:
+        if 'id' not in session and 'id2' not in session:
             flash("请登录！", category="error")     # NOTE: flash-msg show in the NEXT page
             return redirect(url_for('login'))
         return to_be_decorated(*args, **kwargs)
@@ -354,8 +354,25 @@ def classroom_usage():
         return render_template('classroom_usage.html', msgs=msgs,
                                num=num, id_list=id_list)
 
+@app.route('/personal_search/', methods=['GET', 'POST'])
+def personal_search():
+    if request.method == 'GET':
+        return render_template('personal_search.html', hint = True)
+    elif request.method == 'POST':
+        with sqlite3.connect(DATABASE) as database:
+            c = database.cursor()
+            cursor = c.execute('select * from material where dep = ? and name = ?' ,(request.form['dep'], request.form['name']))
+            mat_result = cursor.fetchall()
+            cursor = c.execute('select * from classroom where dep = ? and name = ?' ,(request.form['dep'], request.form['name']))
+            class_result = cursor.fetchall()
+        num_mat = len(mat_result)
+        num_class = len(class_result)
+        return render_template('personal_search.html', hint = False, mat_result = mat_result, class_result=class_result, num_mat = num_mat, num_class = num_class)
+
+#### views for administers ####
+
 @app.route('/scrutiny-application/', methods=['GET', 'POST'])
-# @login_verify # to make sure non-administer can not access this page
+@login_verify # to make sure non-administer can not access this page
 def scrutiny():
     if request.method == 'GET':
         if 'id' in session:
@@ -374,7 +391,7 @@ def scrutiny():
 
 
 @app.route('/approve_mat/<int:id>', methods=['POST'])
-# @login_verify
+@login_verify
 def approve_mat(id):
     record_scrutiny_results('material', id, 1, session['id'])
     printLog("administer {} approved the application for borrowing material.\n application NO: {}\n".format(session['id'],id))
@@ -382,7 +399,7 @@ def approve_mat(id):
     return redirect(url_for('scrutiny'))
 
 @app.route('/refuse_mat/<int:id>', methods=['POST'])
-# @login_verify
+@login_verify
 def refuse_mat(id):
     record_scrutiny_results('material', id, 2, session['id'])
     printLog("administer {} refused the application for borrowing material.\n application NO: {}\n".format(session['id'], id))
@@ -390,7 +407,7 @@ def refuse_mat(id):
     return redirect(url_for('scrutiny'))
 
 @app.route('/approve_class/<int:id>', methods=['POST'])
-# @login_verify
+@login_verify
 def approve_class(id):
     record_scrutiny_results('classroom', id, 1, session['id2'])
     printLog("administer {} approved the application for borrowing classroom.\n application NO: {}\n".format(session['id2'],id))
@@ -398,7 +415,7 @@ def approve_class(id):
     return redirect(url_for('scrutiny'))
 
 @app.route('/refuse_class/<int:id>', methods=['POST'])
-# @login_verify
+@login_verify
 def refuse_class(id):
     record_scrutiny_results('classroom', id, 2, session['id2'])
     printLog("administer {} refused the application for borrowing classroom.\n application NO: {}\n".format(session['id2'], id))
@@ -406,7 +423,7 @@ def refuse_class(id):
     return redirect(url_for('scrutiny'))
 
 @app.route('/records/')
-# @login_verify
+@login_verify
 def records():
     if 'id' in session:
         tablename = 'material'

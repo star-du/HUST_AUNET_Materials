@@ -35,8 +35,17 @@
 				<a href="{{ url_for('classroom_apply') }}" class="collection-item"><i class="material-icons left">file_upload</i>提交借用申请</a>
 			</div>
 		</div>
-
   </li>
+
+	<li>
+		<div class="collapsible-header"><i class="material-icons">assistant</i>更多内容</div>
+		<div class="collapsible-body" style="padding:0">
+			<div class="collection">
+				<a href="{{ url_for('personal_search') }}" class="collection-item"><i class="material-icons left">search</i>申请结果查询</a>
+			</div>
+		</div>
+	</li>
+
   <!-- 后台管理仅已登陆的管理员可以进入 -->
   {% if 'id' in session or 'id2' in session %}
   <li>
