@@ -16,10 +16,10 @@ print ("admin accounts initialized successfully")
 c.execute('''CREATE TABLE ADMIN2
        (ID  TEXT(10)    PRIMARY KEY     NOT NULL,
        PASSWORD           TEXT(30)    NOT NULL); ''')
-print ("Table admin created successfully")
+print ("Table admin2 created successfully")
 ini_accounts =[('sudo','pass'), ('class','qwert')]
 c.executemany('INSERT INTO ADMIN2 VALUES (?,?)', ini_accounts)
-print ("admin accounts initialized successfully")
+print ("admin2 accounts initialized successfully")
 # used to store accounts of adminster overseeing classroom_apply
 
 

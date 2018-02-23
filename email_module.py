@@ -22,7 +22,7 @@ def mail(content,receivers):
         subject = '来自社联的温馨提醒'
         msg['Subject'] = Header(subject, 'utf-8')
         s = smtplib.SMTP_SSL("smtp.qq.com",465) #第三方服务器及其端口
-        # s.set_debuglevel(1)
+        s.set_debuglevel(1)
         s.login(email_sender, email_pass)
         #给列表中所有receiver发送邮件
         for i in range(len(receivers)):
