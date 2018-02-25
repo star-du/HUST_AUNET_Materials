@@ -25,11 +25,12 @@
       <span class="card-title center" style=""><b>申请结果查询</b></span>
     </div>
     <div class="card-action">
-      <div class="row search-bar valign-wrapper " id="search-bar">
+
+      <div class="row search-bar" id="search-bar">
         <form class="col s12 m8 offset-m2 l8 offset-l2" action="{{ url_for('personal_search') }}" method="post">
+<div class="valign-wrapper">
 
-
-      <div class="col s5 offset-s1">
+      <div class="input-field col s4 left">
         <select name="dep">
           <option value="null" id="null" disabled selected>部门</option>
           <option value="财务部" id="fun">财务部</option>
@@ -50,13 +51,13 @@
         <!--label>Materialize Select</label-->
       </div>
 
-        <div class="input-field col s4">
+        <div class="input-field col s4 valign-wrapper">
           <input name="name" type="text" class="validate" required>
           <label for="name" class="center">姓名</label>
         </div>
 
         <button  class="btn-flat waves-effect waves-dark col s2 valign"><i class="material-icons">search</i></button>
-
+</div>
 </form>
       </div>
     </div>

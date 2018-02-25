@@ -11,7 +11,7 @@ from functools import wraps
 from email_module import mail
 
 from glob_var import *
-import sqlite3, os, re#正则
+import sqlite3, os, re, hashlib
 
 
 
@@ -30,7 +30,8 @@ def verify(id, passwd, admin_type):
             flash("用户名不存在！", category="error")
             return False
         else:  # correct id
-            if passwd == correct[0]:
+            hashed_pass = hashlib.sha256((passwd+SALT+id).encode('utf-8')).hexdigest()
+            if hashed_pass == correct[0]:
                 return True    # correct id-pass pair
             else:  # wrong passwd
                 flash("密码错误！", category="error")
@@ -348,12 +349,13 @@ def classroom_apply():
 @app.route('/classroom-usage/')
 def classroom_usage():
     if request.method == 'GET':
-        results = get_records('classroom', date.today().year, date.today().year) # search for unfinished records
+        results = get_records('classroom', date.today().year, date.today().month) # search for unfinished records
         msgs = [i for i in results if i[13] == 1] # search for approved records only
         def get_endtime(record):
-            return struct_timing(record[9], record[10], record[11], record[12])
-        # for j in msgs:
-        #     print(get_endtime(j))
+            return struct_timing(repr(record[9]), repr(record[10]), repr(record[11]), repr(record[12]))
+            # convert int into str
+        for j in msgs:
+            print(get_endtime(j))
         sorted(msgs, key=get_endtime) #TODO:why it doesn't work??
         # print(msgs)
         num = len(msgs)

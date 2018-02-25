@@ -14,3 +14,14 @@ administer 村下没有树 approved the application for borrowing material.
  application NO: 2
 operation time: 2018-02-23 13:50:29
 
+administer sudo approved the application for borrowing classroom.
+ application NO: 1
+operation time: 2018-02-25 19:46:15
+
+user 维尼熊 apply for classroom: 大活611
+operation time: 2018-02-25 22:12:23
+
+administer hash approved the application for borrowing classroom.
+ application NO: 3
+operation time: 2018-02-25 22:12:29
+
