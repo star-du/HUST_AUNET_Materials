@@ -205,11 +205,15 @@ def name_available(name):   # name: str 格式
 
 def struct_timing(year, month, day, hour):
     '''
-    Take **strings** as arguments, return a struct_time instance if it
+    Take **strings** or **integers** as arguments, return a struct_time instance if it
     represents time with given format, else return `None`
     '''
+    a = [year, month, day, hour]
+    for i in range(0, 4):
+        if isinstance(a[i],int):
+            a[i] = repr(a[i])
     try:
-        struct_time1 = strptime(year + ' ' + month + ' ' + day + ' ' + hour,
+        struct_time1 = strptime(a[0] + ' ' + a[1] + ' ' + a[2] + ' ' + a[3],
                                 '%Y %m %d %H')
         return struct_time1
     except ValueError:
@@ -349,15 +353,12 @@ def classroom_apply():
 @app.route('/classroom-usage/')
 def classroom_usage():
     if request.method == 'GET':
-        results = get_records('classroom', date.today().year, date.today().month) # search for unfinished records
-        msgs = [i for i in results if i[13] == 1] # search for approved records only
         def get_endtime(record):
-            return struct_timing(repr(record[9]), repr(record[10]), repr(record[11]), repr(record[12]))
-            # convert int into str
-        for j in msgs:
-            print(get_endtime(j))
-        sorted(msgs, key=get_endtime) #TODO:why it doesn't work??
-        # print(msgs)
+            return struct_timing(record[9], record[10], record[11], record[12])
+        results = get_records('classroom', date.today().year, date.today().month)
+        # search for unfinished records that are approved
+        msgs = [i for i in results if i[13] == 1 and get_endtime(i) >= localtime()]
+        msgs = sorted(msgs, key=get_endtime) # sort messages accoriding to their endtime
         num = len(msgs)
         return render_template('classroom_usage.html', msgs=msgs,
                                num=num)

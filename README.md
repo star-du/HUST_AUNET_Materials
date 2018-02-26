@@ -5,7 +5,8 @@
 HUST AUNET  materials-management
 
 测试用管理员账户
-for admin (物资):
+*for admin* (物资):
 - hash : au
-for admin2 (教室):
+
+*for admin2* (教室):
 - hash : au

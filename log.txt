@@ -25,3 +25,10 @@ administer hash approved the application for borrowing classroom.
  application NO: 3
 operation time: 2018-02-25 22:12:29
 
+user 布尔加科夫 apply for classroom: 36号楼
+operation time: 2018-02-26 08:48:35
+
+administer hash approved the application for borrowing classroom.
+ application NO: 4
+operation time: 2018-02-26 08:48:53
+
