@@ -71,17 +71,44 @@
 								</div></form>
 							</div>
 
-								<div id="signup" class="">
-										<div class="valign-wrapper">
-											<div class="row">
-												<div class="col s8">
-											<p><b>根据相关法律法规， 为响应本年度政府 <i>净网2018</i> 行动的号召，管理员注册暂不开放。</b></p></div>
-											<button class="btn col s3 waves-effect waves-light right disabled" type="submit">注册
-												<i class="material-icons right">flight_takeoff</i>
-											</button>
+							<div id="signup" class="">
+								<form action="{{ url_for('register') }}" method="post">
+									<div class="row">
+										<div class="input-field col s12">
+											<input id="id" name="id" type="text" class="validate" required>
+											<label for="id">用户名</label>
 										</div>
-									</div>
+										<div class="input-field col s12">
+											<input id="passwd_first" name="passwd_first" type="password" class="validate" required>
+											<label for="passwd_first">密码</label>
+										</div>
+										<div class="input-field col s12">
+											<input id="passwd_second" name="passwd_second" type="password" class="validate" required>
+											<label for="passwd_second">确认密码</label>
+										</div>
+										<div class="input-field col s12">
+											<input type="text" name="invitation" class="validate" required>
+											<label for="invitation">芝麻开门</label>
+										</div>
+										<div>
+											<p>
+										<input class="with-gap" name="admin_type" type="radio" id="admin1-r" value="admin1" />
+										<label for="admin1-r">物资管理员</label>
+									</p>
+									<p>
+								<input class="with-gap" name="admin_type" type="radio" id="admin2-r" value="admin2"/>
+								<label for="admin2-r">教室管理员</label>
+							</p>
 								</div>
+									</div>
+									<div class="valign-wrapper">
+										<button class="btn col s3 waves-effect waves-light right" type="submit">注册
+											<i class="material-icons right">flight_takeoff</i>
+										</button>
+									</div>
+								</form>
+							</div>
+
 
 
 
@@ -94,8 +121,33 @@
 
 
 
-    <!-- TODO: Need to add sidebar or not? -->
+    <!-- TODO: Need to add extra modal to confirm register info? -->
 		<script>
+		/**
+		* Materialize Controller code
+		*/
+		$(document).ready(function(){
+		$('.collapsible').collapsible();
+		$('.modal').modal();
+		$('select').material_select();
+		$('.modal').modal({
+		  dismissible: true, // Modal can be dismissed by clicking outside of the modal
+		  opacity: .5, // Opacity of modal background
+		  in_duration: 300, // Transition in duration
+		  out_duration: 200, // Transition out duration
+		  starting_top: '4%', // Starting top style attribute
+		  ending_top: '10%', // Ending top style attribute
+		  ready: function(modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+		    console.log(modal, trigger);
+		  },
+		  complete: function() {} // Callback for Modal close
+		});
+
+		$('.datepicker').pickadate({
+		  selectMonths: true, // Creates a dropdown to control month
+		  selectYears: 15 // Creates a dropdown of 15 years to control year
+		});
+		});
 		</script>
 
 {% endblock %}

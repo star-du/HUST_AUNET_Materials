@@ -5,6 +5,7 @@ SYSTEM_ROOT = os.path.split(os.path.realpath(__file__))[0]
 DATABASE = os.path.join(SYSTEM_ROOT, 'data.db')
 LOG = os.path.join(SYSTEM_ROOT, 'log.txt')
 SALT = 'HUSTAUNET' # used as salt for hash function
+INVITATION = 'au'
 
 # for email_module
 # if email_enable = True and email_sender, email_pass are correctly

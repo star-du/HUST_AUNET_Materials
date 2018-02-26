@@ -37,6 +37,34 @@ def verify(id, passwd, admin_type):
                 flash("密码错误！", category="error")
                 return False
 
+def adminRegist(id, passwd, admin_type):
+    '''Register a new administrater.
+
+    admin_type should be either 'admin1' or 'admin2'.
+    '''
+    if admin_type == 'admin1':
+        db = 'ADMIN'
+    elif admin_type == 'admin2':
+        db = 'ADMIN2'
+    else:
+        flash("注册信息错误", category='error')
+    if id == '' or passwd == '':
+        flash("用户名或密码不能为空！", category='error')
+        return False
+    with sqlite3.connect(DATABASE) as database:
+        cursor = database.execute("select password from %s where id = ? "%db, (id,))
+        empty = cursor.fetchone()
+        if empty != None:
+            flash("用户名已经存在!", category='warning')
+            return False
+        else:  # id is new
+            treated = hashlib.sha256((passwd+SALT+id).encode('utf-8'))
+            sql_sentence = "insert into %s (id, password) values (?, ?)"%db
+            cur = database.execute(sql_sentence,(id, treated.hexdigest()))
+            database.commit()
+            flash("注册成功！<br>请登录！", category='success')
+            return True
+
 def printLog(log):
     ''' Use to write log for user's behaviour '''
     with open(LOG, encoding="utf-8", mode='a') as f:
@@ -297,6 +325,25 @@ def login():
                     session.pop('id2', None)
                     session.pop('passwd', None)
                     return redirect(url_for('login'))
+        else:
+            return redirect(url_for('login'))
+
+@app.route('/register/', methods=['POST'])
+def register():
+    id = request.form['id']
+    passwd = request.form['passwd_first']
+    if passwd != request.form['passwd_second']:
+        flash("两次密码不相同！<br>换个好记一点的吧？", category='error')
+        return redirect(url_for('login'))
+    # elif len(passwd) < 8:
+    #     flash("密码太短了！", category='warning')
+    #     return redirect(url_for('login'))
+    elif request.form['invitation'] != INVITATION:
+        flash("邀请码错误！", category='error')
+        return redirect(url_for('login'))
+    else:
+        if adminRegist(id, passwd, request.form['admin_type']):
+            return redirect(url_for('login'))
         else:
             return redirect(url_for('login'))
 
